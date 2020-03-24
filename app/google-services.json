@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "315404360006",
+    "firebase_url": "https://findmycoso.firebaseio.com",
+    "project_id": "findmycoso",
+    "storage_bucket": "findmycoso.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315404360006:android:c7e1c121d3163a91882d47",
+        "android_client_info": {
+          "package_name": "com.camoli.findmycoso"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315404360006-bq53cgs4d14l4jsc6135hhrimd59qnpe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3QX3axrYxPSuy99tcAqy3rQSIqqJPZKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315404360006-bq53cgs4d14l4jsc6135hhrimd59qnpe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
