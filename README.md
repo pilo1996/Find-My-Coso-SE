@@ -1,6 +1,6 @@
 # Find My Coso
 
-_Find My Coso_ è un progetto di Laurea Triennale finalizzato per la stesura di una tesi.
+_Find My Coso_ è un progetto di Laurea Triennale finalizzato per la stesura di un elaborato finale (tesi).
 Il progetto è comprovato e convalidato dal docente relatore **Fabrizio Romano**, dell'**Università Ca' Foscari di Venezia**.
 
 ## Overview del progetto
