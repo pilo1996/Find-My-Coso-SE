@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "315404360006-3kbe8pohdubt5fh2b3lq3idhrvorf1r9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.camoli.findmycoso",
+            "certificate_hash": "a400166b4a9cfe28fbcedeb2342e10ee83d3bc2e"
+          }
+        },
+        {
           "client_id": "315404360006-bq53cgs4d14l4jsc6135hhrimd59qnpe.apps.googleusercontent.com",
           "client_type": 3
         }

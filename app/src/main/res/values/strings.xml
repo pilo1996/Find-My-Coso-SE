@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Find My Coso</string>
+
+    <string name="title_activity_welcome">Welcome</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="ca_foscari_logo">Ca\' Foscari Logo</string>
+    <string name="benvenuto_in_find_my_coso">Benvenuto in \nFind My Coso</string>
+    <string name="filippo_camoli">Filippo Camoli</string>
+    <string name="sviluppata_da">Sviluppata da</string>
+    <string name="universit_ca_foscari_di_venezia">Università Ca\' Foscari \ndi Venezia</string>
+    <string name="app_logo">App Logo</string>
 </resources>
