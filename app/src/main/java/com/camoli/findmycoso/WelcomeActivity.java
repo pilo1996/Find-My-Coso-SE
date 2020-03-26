@@ -45,8 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sharedpref.setNoFirstBoot();
-                startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                startActivity(new Intent(WelcomeActivity.this, Login.class));
                 finish();
             }
         });
@@ -55,7 +54,6 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int current = vp.getCurrentItem()+1;
                 if(current == layouts.length){
-                    sharedpref.setNoFirstBoot();
                     startActivity(new Intent(WelcomeActivity.this, Login.class));
                     finish();
                 }

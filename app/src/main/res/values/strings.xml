@@ -30,4 +30,6 @@
     <string name="todo">TODO</string>
     <string name="consultare_lo_storico_delle_loro_posizioni">Consultare lo storico delle loro posizioni...</string>
     <string name="todofhgfh">TODOfhgfh</string>
+    <string name="label_login">Login</string>
+    <string name="label_register">Registrazione</string>
 </resources>
