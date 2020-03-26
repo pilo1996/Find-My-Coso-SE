@@ -1,53 +1,87 @@
 package com.camoli.findmycoso;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
+import android.animation.ObjectAnimator;
+import android.animation.TimeAnimator;
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    private static final long SPLASH_TIME_OUT = 3000;
+    private static final long SPLASH_TIME_OUT = 5000;
     private ImageView cfLogo;
     SharedPref sharedpref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedpref = new SharedPref(this);
-
-        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
-            case Configuration.UI_MODE_NIGHT_YES:
-                setTheme(R.style.DarkMode);
-                break;
-            case Configuration.UI_MODE_NIGHT_NO:
-                setTheme(R.style.AppTheme);
-                break;
-        }
-
-        if(sharedpref.getDarkModeState())
-            setTheme(R.style.DarkMode);
-        else
-            setTheme(R.style.AppTheme);
-
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_splash_screen);
 
-        cfLogo = findViewById(R.id.cafoscari_logo);
-        if(sharedpref.getDarkModeState()){
-            cfLogo.setImageResource(R.mipmap.cafoscarilogo_w);
-        }
+        sharedpref = new SharedPref(this);
 
+        startAnimation(this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent startIntent = new Intent(SplashScreenActivity.this, Impostazioni.class);
-                startActivity(startIntent);
-                finish();
+                if(sharedpref.isFirstBoot()){
+                    sharedpref.setNoFirstBoot();
+                    startActivity(new Intent(SplashScreenActivity.this, WelcomeActivity.class));
+                    finish();
+                }
+                else{
+                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                    finish();
+                }
             }
         }, SPLASH_TIME_OUT);
+    }
+
+    public static void startAnimation(final Activity activity) {
+        //final int giallo = Color.parseColor("#feda75");
+        final int arancione = Color.parseColor("#fa7e1e");
+        final int rosso = Color.parseColor("#d62976");
+        final int viola = Color.parseColor("#962fbf");
+        final int blu = Color.parseColor("#4f5bd5");
+
+
+        final ArgbEvaluator evaluator = new ArgbEvaluator();
+        View preloader = activity.findViewById(R.id.gradientPreloaderView);
+        preloader.setVisibility(View.VISIBLE);
+        final GradientDrawable gradient = (GradientDrawable) preloader.getBackground();
+
+        ValueAnimator animator = TimeAnimator.ofFloat(0.0f, 1.0f);
+        animator.setDuration(SPLASH_TIME_OUT/2);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                Float fraction = valueAnimator.getAnimatedFraction();
+                //int newGiallo = (int) evaluator.evaluate(fraction, giallo, arancione);
+                int newArancio = (int) evaluator.evaluate(fraction, arancione, blu);
+                int newRosso = (int) evaluator.evaluate(fraction, rosso, arancione);
+                int newViola = (int) evaluator.evaluate(fraction, viola, rosso);
+                int newBlu = (int) evaluator.evaluate(fraction, blu, viola);
+                int[] newArray = {newArancio, newRosso, newViola, newBlu};
+                gradient.setColors(newArray);
+            }
+        });
+
+        animator.start();
     }
 }

@@ -16,4 +16,18 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="puoi_abilitare_o_disabiitare_la_dark_mode_ndi_default_vengono_applicate_le_impostazioni_del_dispositivo">Puoi abilitare o disabiitare la dark mode.\nDi default, vengono applicate le impostazioni del dispositivo.</string>
     <string name="find_my_coso">Find My Coso</string>
+    <string name="next">Next</string>
+    <string name="avanti">Avanti</string>
+    <string name="salta">Salta</string>
+    <string name="benvenuto">Benvenuto in</string>
+    <string name="in_questa_applicazione_potrai_localizzare_i_tuoi_dispositivi_android">In questa applicazione, potrai localizzare i tuoi dispositivi Android™</string>
+    <string name="tutto_tramite_un_solo_account">...Tutto tramite un solo account!</string>
+    <string name="per_ulteriori_informazioni_visita">Per ulteriori informazioni visita:</string>
+    <string name="camoli_ns0_it">camoli.ns0.it</string>
+    <string name="user_icon">User icon</string>
+    <string name="text_logo">text_logo</string>
+    <string name="localizza_i_tuoi_dispositivi">Localizza i tuoi dispositivi</string>
+    <string name="todo">TODO</string>
+    <string name="consultare_lo_storico_delle_loro_posizioni">Consultare lo storico delle loro posizioni...</string>
+    <string name="todofhgfh">TODOfhgfh</string>
 </resources>

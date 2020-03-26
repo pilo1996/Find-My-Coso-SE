@@ -21,4 +21,15 @@ public class SharedPref {
     public Boolean getDarkModeState(){
         return myPreferences.getBoolean("DarkMode", false);
     }
+
+    //Metodo che salva lo stato della night mode: true o false
+    public void setNoFirstBoot(){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putBoolean("FirstBoot", false);
+        editor.commit();
+    }
+
+    public Boolean isFirstBoot(){
+        return myPreferences.getBoolean("FirstBoot", true);
+    }
 }
