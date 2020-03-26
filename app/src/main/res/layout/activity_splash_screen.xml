@@ -64,7 +64,7 @@
         android:layout_below="@id/cafoscari_logo"
         android:layout_marginTop="5dp"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="16dp"
         />
 
 
@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:text="@string/sviluppata_da"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="16dp"
         android:textStyle="italic" />
 
     <TextView
@@ -89,6 +89,6 @@
         android:layout_below="@id/label_sviluppata"
         android:layout_centerHorizontal="true"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="18dp"
         />
 </RelativeLayout>

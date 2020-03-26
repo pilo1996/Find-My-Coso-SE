@@ -13,7 +13,7 @@
         android:text="@string/tutto_tramite_un_solo_account"
         android:textAlignment="center"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textSize="18dp" />
 
     <ImageView
         android:layout_width="250dp"
@@ -29,7 +29,7 @@
         android:text="@string/per_ulteriori_informazioni_visita"
         android:textColor="@android:color/white"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="18dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         android:text="@string/camoli_ns0_it"
         android:textAlignment="center"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold" />
 
 </LinearLayout>

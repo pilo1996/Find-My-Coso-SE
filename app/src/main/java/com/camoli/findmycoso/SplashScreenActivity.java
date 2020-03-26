@@ -39,7 +39,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(sharedpref.isFirstBoot()){
-                    sharedpref.setNoFirstBoot();
                     startActivity(new Intent(SplashScreenActivity.this, WelcomeActivity.class));
                     finish();
                 }
@@ -52,7 +51,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     public static void startAnimation(final Activity activity) {
-        //final int giallo = Color.parseColor("#feda75");
         final int arancione = Color.parseColor("#fa7e1e");
         final int rosso = Color.parseColor("#d62976");
         final int viola = Color.parseColor("#962fbf");
@@ -61,8 +59,13 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         final ArgbEvaluator evaluator = new ArgbEvaluator();
         View preloader = activity.findViewById(R.id.gradientPreloaderView);
-        preloader.setVisibility(View.VISIBLE);
-        final GradientDrawable gradient = (GradientDrawable) preloader.getBackground();
+        final GradientDrawable gradient;
+        if(android.os.Build.VERSION.SDK_INT >= 29){
+            gradient = (GradientDrawable) preloader.getBackground();
+        }else{
+            gradient = new GradientDrawable();
+        }
+
 
         ValueAnimator animator = TimeAnimator.ofFloat(0.0f, 1.0f);
         animator.setDuration(SPLASH_TIME_OUT/2);
@@ -72,7 +75,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 Float fraction = valueAnimator.getAnimatedFraction();
-                //int newGiallo = (int) evaluator.evaluate(fraction, giallo, arancione);
                 int newArancio = (int) evaluator.evaluate(fraction, arancione, blu);
                 int newRosso = (int) evaluator.evaluate(fraction, rosso, arancione);
                 int newViola = (int) evaluator.evaluate(fraction, viola, rosso);

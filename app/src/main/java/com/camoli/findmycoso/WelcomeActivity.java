@@ -26,15 +26,15 @@ public class WelcomeActivity extends AppCompatActivity {
     private int[] layouts;
     private Button btnSkip, btnNext;
     private MyPageAdapter mpa;
+    private SharedPref sharedpref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_welcome);
-
+        sharedpref = new SharedPref(this);
         startAnimation(this);
-
         vp = findViewById(R.id.view_pager);
         layoutDot = findViewById(R.id.dotLayout);
         btnSkip = findViewById(R.id.btn_skip);
@@ -45,6 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sharedpref.setNoFirstBoot();
                 startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                 finish();
             }
@@ -54,6 +55,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int current = vp.getCurrentItem()+1;
                 if(current == layouts.length){
+                    sharedpref.setNoFirstBoot();
                     startActivity(new Intent(WelcomeActivity.this, Login.class));
                     finish();
                 }
