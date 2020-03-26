@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="?attr/backgroundcolor"
     tools:context=".SplashScreenActivity">
 
     <TextView
@@ -12,15 +12,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sviluppata_da"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/textcolor"
+        android:textSize="14sp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.911" />
+        app:layout_constraintVertical_bias="0.905" />
 
     <ImageView
-        android:id="@+id/imageView7"
+        android:id="@+id/app_logo"
         android:layout_width="320dp"
         android:layout_height="306dp"
         android:contentDescription="@string/app_logo"
@@ -29,8 +31,8 @@
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.101"
-        app:srcCompat="@mipmap/logo_transparent" />
+        app:layout_constraintVertical_bias="0.037"
+        app:srcCompat="@mipmap/logo_transparent_img_only" />
 
     <TextView
         android:id="@+id/textView3"
@@ -38,7 +40,7 @@
         android:layout_height="wrap_content"
         android:text="@string/universit_ca_foscari_di_venezia"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/textcolor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -51,7 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/filippo_camoli"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/textcolor"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +62,7 @@
         app:layout_constraintVertical_bias="0.938" />
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/cafoscari_logo"
         android:layout_width="135dp"
         android:layout_height="116dp"
         android:contentDescription="@string/ca_foscari_logo"
@@ -68,12 +71,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.673"
-        app:srcCompat="@mipmap/cafoscarilogo_w" />
+        app:srcCompat="@mipmap/cafoscarilogo" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
+    <TextView
+        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="top" />
-
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="@string/find_my_coso"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?attr/textcolor"
+        android:textSize="38sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.417" />
 </androidx.constraintlayout.widget.ConstraintLayout>

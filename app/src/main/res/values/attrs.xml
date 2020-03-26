@@ -9,4 +9,12 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="ds">
+        <attr name="backgroundcolor" format="color" />
+        <attr name="boxbackground" format="color" />
+        <attr name="textcolor" format="color" />
+        <attr name="tintcolor" format="color" />
+        <attr name="buttoncolor" format="color" />
+    </declare-styleable>
+
 </resources>

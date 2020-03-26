@@ -10,4 +10,10 @@
     <string name="sviluppata_da">Sviluppata da</string>
     <string name="universit_ca_foscari_di_venezia">Università Ca\' Foscari \ndi Venezia</string>
     <string name="app_logo">App Logo</string>
+    <string name="permessi">Permessi</string>
+    <string name="per_poter_utilizzare_l_applicazione_necessario_il_consenso_dei_permessi_nclicca_sul_pulsante_ottieni_permessi_per_richiederli">Per poter utilizzare l\'applicazione è necessario il consenso dei permessi.\nClicca sul pulsante \'Ottieni Permessi\' per richiederli.</string>
+    <string name="ottieni_permessi">Ottieni Permessi</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="puoi_abilitare_o_disabiitare_la_dark_mode_ndi_default_vengono_applicate_le_impostazioni_del_dispositivo">Puoi abilitare o disabiitare la dark mode.\nDi default, vengono applicate le impostazioni del dispositivo.</string>
+    <string name="find_my_coso">Find My Coso</string>
 </resources>
