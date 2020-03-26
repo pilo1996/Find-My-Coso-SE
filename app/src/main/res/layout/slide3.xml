@@ -3,7 +3,6 @@
     android:id="@+id/slide3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundcolor"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -11,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
+        android:textColor="@android:color/white"
         android:text="@string/consultare_lo_storico_delle_loro_posizioni"
         android:textAlignment="center"
-        android:textColor="?attr/textcolor"
         android:textSize="18sp" />
 
     <ImageView

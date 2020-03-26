@@ -5,6 +5,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static com.camoli.findmycoso.SplashScreenActivity.startAnimation;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -27,15 +30,17 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_welcome);
 
-        //setStatusBarTrasparent();
+        startAnimation(this);
 
         vp = findViewById(R.id.view_pager);
         layoutDot = findViewById(R.id.dotLayout);
         btnSkip = findViewById(R.id.btn_skip);
         btnNext = findViewById(R.id.btn_next);
         layouts = new int[]{R.layout.slide1, R.layout.slide2, R.layout.slide3, R.layout.slide4};
+        setDotStatus(0);
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +49,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,9 +62,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             }
         });
-
-        setDotStatus(0);
-        mpa = new MyPageAdapter(layouts, getApplicationContext());
+        mpa = new MyPageAdapter(layouts, this);
         vp.setAdapter(mpa);
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -102,12 +104,5 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    private void setStatusBarTrasparent(){
-        if(Build.VERSION.SDK_INT >=21){
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_FULLSCREEN);
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
+
 }

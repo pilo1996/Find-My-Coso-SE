@@ -3,17 +3,16 @@
     android:id="@+id/slide2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundcolor"
     android:gravity="center"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:layout_marginBottom="50dp"
         android:text="@string/in_questa_applicazione_potrai_localizzare_i_tuoi_dispositivi_android"
         android:textAlignment="center"
-        android:textColor="?attr/textcolor"
         android:textSize="18sp" />
 
     <ImageView

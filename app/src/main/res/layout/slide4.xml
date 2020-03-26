@@ -3,24 +3,23 @@
     android:id="@+id/slide4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundcolor"
     android:gravity="center"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/tutto_tramite_un_solo_account"
         android:textAlignment="center"
-        android:textColor="?attr/textcolor"
+        android:textColor="@android:color/white"
         android:textSize="18sp" />
 
     <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="10dp"
         android:contentDescription="@string/user_icon"
         android:src="@mipmap/user" />
 
@@ -28,8 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/per_ulteriori_informazioni_visita"
+        android:textColor="@android:color/white"
         android:textAlignment="center"
-        android:textColor="?attr/textcolor"
         android:textSize="18sp" />
 
     <TextView
@@ -37,8 +36,7 @@
         android:layout_height="wrap_content"
         android:text="@string/camoli_ns0_it"
         android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="?attr/textcolor"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
