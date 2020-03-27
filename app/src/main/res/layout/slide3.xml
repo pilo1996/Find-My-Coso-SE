@@ -13,7 +13,7 @@
         android:textColor="@android:color/white"
         android:text="@string/consultare_lo_storico_delle_loro_posizioni"
         android:textAlignment="center"
-        android:textSize="18dp" />
+        android:textSize="18sp" />
 
     <ImageView
         android:layout_width="250dp"

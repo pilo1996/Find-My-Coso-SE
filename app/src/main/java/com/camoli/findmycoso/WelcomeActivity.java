@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.camoli.findmycoso.ui.login.LoginActivity;
+
 import static com.camoli.findmycoso.SplashScreenActivity.startAnimation;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -45,7 +47,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(WelcomeActivity.this, Login.class));
+                startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                 finish();
             }
         });
@@ -54,7 +56,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int current = vp.getCurrentItem()+1;
                 if(current == layouts.length){
-                    startActivity(new Intent(WelcomeActivity.this, Login.class));
+                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                     finish();
                 }
                 else{

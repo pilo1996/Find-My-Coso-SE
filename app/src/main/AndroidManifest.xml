@@ -17,7 +17,10 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:label="@string/title_activity_login"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".Impostazioni" />
         <activity android:name=".SplashScreenActivity">
@@ -27,8 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login" />
-        <activity android:name=".Register" />
 
         <meta-data
             android:name="preloaded_fonts"

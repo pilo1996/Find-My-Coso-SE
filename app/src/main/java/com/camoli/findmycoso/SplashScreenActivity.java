@@ -20,6 +20,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.camoli.findmycoso.ui.login.LoginActivity;
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static final long SPLASH_TIME_OUT = 5000;
@@ -43,7 +45,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
                     finish();
                 }
             }
