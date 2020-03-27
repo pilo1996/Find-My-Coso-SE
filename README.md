@@ -16,6 +16,11 @@ Verranno utilizzati software come **Android Studio**, **PHPStorm**, e servizi Sa
 Grazie all'utilizzo di Firebase, verranno semplificate di molto la gestione del database, notifiche, dati e mail, evitando l'impostazione di un server fisico fatto in casa.
 
 ## TODO List
+- [X] Splash screen
+- [X] Sfondo dinamico in splash screen e intro/tutorial
+- [X] Tutorial
+- [X] Dark Mode
+- [X] Bozza delle impostazioni e login
 - [ ] Tutto
 
 # 
