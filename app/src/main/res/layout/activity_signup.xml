@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contenitore"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Login"
-    android:background="@drawable/background_login">
+    android:background="@drawable/background_login"
+    android:id="@+id/contenitore">
+
+
 
     <TextView
         android:id="@+id/login_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/accedi"
+        android:text="@string/registrazione"
         android:textColor="@android:color/white"
         android:textAlignment="center"
         android:layout_marginTop="50dp"
@@ -68,45 +70,53 @@
             android:textColor="@android:color/white"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/retype_input_password"
+        android:layout_width="270dp"
+        android:textColorHint="@android:color/darker_gray"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        android:layout_below="@+id/password_input_layout">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_retype_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/ripeti_password"
+            android:layout_centerHorizontal="true"
+            android:textColorHint="@android:color/darker_gray"
+            android:backgroundTint="@android:color/white"
+            android:textColor="@android:color/white"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/confirm_signup_button"
         android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/password_input_layout"
+        android:layout_below="@id/retype_input_password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/rounded_button"
         android:ems="10"
-        android:text="@string/login_uppercase"
+        android:text="@string/conferma_registrazione"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:enabled="false"/>
 
     <Button
-        android:id="@+id/reset_password"
+        android:id="@+id/turn_back_login"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:background="@android:color/transparent"
-        android:text="@string/non_ricordi_la_password"
-        android:textAllCaps="false"
-        android:textAlignment="center"
-        android:textColor="@android:color/white" />
-
-    <Button
-        android:id="@+id/signup_button"
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/reset_password"
+        android:layout_below="@id/confirm_signup_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:background="@drawable/rounded_button_alt"
-        android:ems="10"
-        android:text="@string/signup_label"
+        android:background="@android:color/transparent"
+        android:text="@string/hai_gi_un_account"
+        android:textAllCaps="false"
         android:textAlignment="center"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        />
 
 </RelativeLayout>

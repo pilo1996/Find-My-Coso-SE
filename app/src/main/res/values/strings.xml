@@ -41,4 +41,15 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login_uppercase">LOGIN</string>
+    <string name="non_ricordi_la_password">Non ricordi la password?</string>
+    <string name="accedi">Accedi</string>
+    <string name="signup_label">Registrati</string>
+    <string name="registrazione">Registrazione</string>
+    <string name="hai_gi_un_account">Hai già un account?</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="ripeti_password">Ripeti password</string>
+    <string name="conferma_registrazione">Conferma registrazione</string>
 </resources>

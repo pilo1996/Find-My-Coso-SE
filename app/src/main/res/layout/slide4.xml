@@ -31,13 +31,16 @@
         android:textAlignment="center"
         android:textSize="18dp" />
 
-    <TextView
+    <Button
+        android:id="@+id/camoli_site"
+        style="@android:style/Widget.Material.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/camoli_ns0_it"
         android:textAlignment="center"
         android:textColor="@android:color/white"
-        android:textSize="18dp"
-        android:textStyle="bold" />
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAllCaps="false"/>
 
 </LinearLayout>

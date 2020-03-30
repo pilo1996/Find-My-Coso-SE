@@ -6,6 +6,7 @@ import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
 import android.animation.ValueAnimator;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,18 +21,21 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.camoli.findmycoso.ui.login.LoginActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    private static final long SPLASH_TIME_OUT = 5000;
+    private static final long SPLASH_TIME_OUT = 2500;
     private ImageView cfLogo;
     SharedPref sharedpref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
         getSupportActionBar().hide();
+
         setContentView(R.layout.activity_splash_screen);
 
         sharedpref = new SharedPref(this);
@@ -45,7 +49,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, Login.class));
                     finish();
                 }
             }
@@ -70,7 +74,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 
         ValueAnimator animator = TimeAnimator.ofFloat(0.0f, 1.0f);
-        animator.setDuration(SPLASH_TIME_OUT/2);
+        animator.setDuration(SPLASH_TIME_OUT*2);
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setRepeatMode(ValueAnimator.REVERSE);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
