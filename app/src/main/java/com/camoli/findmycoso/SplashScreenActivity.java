@@ -1,5 +1,6 @@
 package com.camoli.findmycoso;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
@@ -12,14 +13,14 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -27,6 +28,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private static final long SPLASH_TIME_OUT = 2500;
     private ImageView cfLogo;
     SharedPref sharedpref;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         sharedpref = new SharedPref(this);
+        mAuth = FirebaseAuth.getInstance();
 
         startAnimation(this);
         new Handler().postDelayed(new Runnable() {
@@ -49,8 +52,17 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    startActivity(new Intent(SplashScreenActivity.this, Login.class));
-                    finish();
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                    //decommentare per scopi di debug
+                    //currentUser = null;
+                    if(currentUser != null){
+                        Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    }else {
+                        startActivity(new Intent(SplashScreenActivity.this, Login.class));
+                        finish();
+                    }
                 }
             }
         }, SPLASH_TIME_OUT);
@@ -74,7 +86,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 
         ValueAnimator animator = TimeAnimator.ofFloat(0.0f, 1.0f);
-        animator.setDuration(SPLASH_TIME_OUT*2);
+        animator.setDuration(SPLASH_TIME_OUT);
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setRepeatMode(ValueAnimator.REVERSE);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

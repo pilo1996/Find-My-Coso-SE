@@ -17,12 +17,15 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Signup"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Signup" />
         <activity android:name=".Login" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".MainActivity" />
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".Impostazioni" />
         <activity android:name=".SplashScreenActivity">

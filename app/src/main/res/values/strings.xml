@@ -52,4 +52,5 @@
     <string name="sign_up">SIGN UP</string>
     <string name="ripeti_password">Ripeti password</string>
     <string name="conferma_registrazione">Conferma registrazione</string>
+    <string name="title_activity_main">Home</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.camoli.findmycoso;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.Animator;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.View;
@@ -15,9 +17,16 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
@@ -30,7 +39,7 @@ public class Signup extends AppCompatActivity {
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
                     //"(?=.*[0-9])" +         //at least 1 digit
-                    "(?=.*[a-z])" +         //at least 1 lower case letter
+                    //"(?=.*[a-z])" +         //at least 1 lower case letter
                     "(?=.*[A-Z])" +         //at least 1 upper case letter
                     "(?=.*[a-zA-Z])" +      //any letter
                     "(?=.*[!@#$%^&+=])" +    //at least 1 special character
@@ -43,6 +52,9 @@ public class Signup extends AppCompatActivity {
                     "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+"
             );
 
+    private FirebaseAuth mAuth;
+    private SharedPref sharedPref;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +66,12 @@ public class Signup extends AppCompatActivity {
 
         i = getIntent();
         background = findViewById(R.id.contenitore);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        sharedPref = new SharedPref(getApplicationContext());
+
+        progressBar = findViewById(R.id.progress_bar);
 
         confirmSignup = findViewById(R.id.confirm_signup_button);
         confirmSignup.setEnabled(false);
@@ -98,9 +116,42 @@ public class Signup extends AppCompatActivity {
             @SuppressLint("ShowToast")
             @Override
             public void onClick(View v) {
-                confirmInput();
+                if(!confirmInput())
+                    return;
+                String email = layoutInputEmail.getEditText().getText().toString().trim();
+                String password = layoutInputPassword.getEditText().getText().toString().trim();
+                confirmSignup.setText("");
+                confirmSignup.setEnabled(false);
+                progressBar.setVisibility(View.VISIBLE);
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(getApplicationContext(), "Registrato con successo!", Toast.LENGTH_SHORT).show();
+                            sharedPref.setUser(mAuth.getCurrentUser());
+                            int dim[] = new int[2];
+                            turnBackToLogin.getLocationInWindow(dim);
+                            i.putExtra("x", dim[0]+(turnBackToLogin.getWidth()/2));
+                            i.putExtra("y", dim[1]+(turnBackToLogin.getHeight()/2));
+                            startActivity(new Intent(getApplicationContext(), Login.class));
+                        }else {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            confirmSignup.setText(R.string.conferma_registrazione);
+                            confirmSignup.setEnabled(true);
+                            Toast.makeText(getApplicationContext(), "Impossibile registrarsi.", Toast.LENGTH_SHORT).show();
+                            //se la mail è già registrata
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException){
+                                Toast.makeText(getApplicationContext(), "Email già registrata.", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
             }
         });
+
 }
 
     private TextWatcher loginTextWatcher = new TextWatcher() {
@@ -125,7 +176,6 @@ public class Signup extends AppCompatActivity {
 
         }
     };
-
 
     private boolean checkPassword() {
         String passwordInput = layoutInputPassword.getEditText().getText().toString().trim();
@@ -162,13 +212,8 @@ public class Signup extends AppCompatActivity {
         }
     }
 
-    private void confirmInput() {
-        if (!checkEmail() | !checkPassword())
-            return;
-        String input = "Email: " + layoutInputEmail.getEditText().getText().toString();
-        input += "\n";
-        input += "Password: " + layoutInputPassword.getEditText().getText().toString();
-        Toast.makeText(this, input, Toast.LENGTH_SHORT).show();
+    private boolean confirmInput() {
+        return (checkEmail() && checkPassword());
     }
 
     private void circularRevealActivity(){

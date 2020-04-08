@@ -1,5 +1,6 @@
 package com.camoli.findmycoso;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.Animator;
@@ -15,9 +16,15 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
@@ -28,6 +35,9 @@ public class Login extends AppCompatActivity {
     private View background;
     private static final Pattern EMAIL_ADDRESS = Pattern.compile("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+");
     private Intent i;
+    private SharedPref sharedPref;
+    private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +48,11 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         i = getIntent();
         background = findViewById(R.id.contenitore);
-
+        progressBar = findViewById(R.id.progress_bar);
         login = findViewById(R.id.login_button);
         login.setEnabled(false);
         login.setBackground(getDrawable(R.drawable.rounded_button_disabled));
-
+        sharedPref = new SharedPref(getApplicationContext());
         signup = findViewById(R.id.signup_button);
         resetPassword = findViewById(R.id.reset_password);
         layoutInputEmail = findViewById(R.id.email_input_layout);
@@ -78,14 +88,40 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(login.isEnabled())
+                if(!login.isEnabled())
                     return;
+                String email = layoutInputEmail.getEditText().getText().toString().trim().toLowerCase();
+                String password = layoutInputPassword.getEditText().getText().toString().trim();
+                login.setText("");
+                login.setEnabled(false);
+                progressBar.setVisibility(View.VISIBLE);
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                            sharedPref.setUser(mAuth.getCurrentUser());
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
+                        }
+                        else {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            login.setText(R.string.label_login);
+                            login.setEnabled(true);
+
+                        }
+                    }
+                });
             }
         });
 
         layoutInputEmail.getEditText().addTextChangedListener(loginTextWatcher);
         layoutInputPassword.getEditText().addTextChangedListener(loginTextWatcher);
+
+        mAuth = FirebaseAuth.getInstance();
     }
+
+
 
     private TextWatcher loginTextWatcher = new TextWatcher() {
         @Override

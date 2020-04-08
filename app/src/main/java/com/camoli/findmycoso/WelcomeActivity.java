@@ -41,7 +41,7 @@ public class WelcomeActivity extends AppCompatActivity {
         layoutDot = findViewById(R.id.dotLayout);
         btnSkip = findViewById(R.id.btn_skip);
         btnNext = findViewById(R.id.btn_next);
-
+        sharedpref = new SharedPref(getApplicationContext());
         layouts = new int[]{R.layout.slide1, R.layout.slide2, R.layout.slide3, R.layout.slide4};
         setDotStatus(0);
 
@@ -68,6 +68,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 btnSkip.getLocationInWindow(dim);
                 i.putExtra("x", dim[0]+(btnSkip.getWidth()/2));
                 i.putExtra("y", dim[1]+(btnSkip.getHeight()/2));
+                sharedpref.setNoFirstBoot();
                 startActivity(i);
                 finish();
             }
@@ -83,6 +84,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     btnNext.getLocationInWindow(dim);
                     i.putExtra("x", dim[0]+(btnNext.getWidth()/2));
                     i.putExtra("y", dim[1]+(btnNext.getHeight()/2));
+                    sharedpref.setNoFirstBoot();
                     startActivity(i);
                     finish();
                 }
