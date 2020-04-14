@@ -11,16 +11,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Impostazioni extends AppCompatActivity {
 
     private Switch darkMode;
-    private Button getPermissionsBtn;
+    private Button getPermissionsBtn, logOutBtn, updateProfileBtn;
     SharedPref sharedpref;
     private Object mMap;
 
@@ -74,6 +77,30 @@ public class Impostazioni extends AppCompatActivity {
                     sharedpref.setDarkModeState(false);
                 }
                 refresh();
+            }
+        });
+
+        updateProfileBtn = findViewById(R.id.update_profile);
+        updateProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                finish();
+            }
+        });
+
+        logOutBtn = findViewById(R.id.logOut);
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent i = new Intent(getApplicationContext(), Login.class);
+                int dim[] = new int[2];
+                logOutBtn.getLocationInWindow(dim);
+                i.putExtra("x", dim[0]+(logOutBtn.getWidth()/2));
+                i.putExtra("y", dim[1]+(logOutBtn.getHeight()/2));
+                startActivity(i);
+                finish();
             }
         });
 

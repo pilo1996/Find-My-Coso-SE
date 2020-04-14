@@ -53,4 +53,10 @@
     <string name="ripeti_password">Ripeti password</string>
     <string name="conferma_registrazione">Conferma registrazione</string>
     <string name="title_activity_main">Home</string>
+    <string name="nome">Nome</string>
+    <string name="salva">Salva</string>
+    <string name="vai_a_home">Vai a HOME</string>
+    <string name="logout">Logout</string>
+    <string name="account_explanation">Puoi modificare foto profilo e nome, basta premere sul pulsante \'Aggiorna Profilo\'.</string>
+    <string name="aggiorna_profilo">Aggiorna profilo</string>
 </resources>

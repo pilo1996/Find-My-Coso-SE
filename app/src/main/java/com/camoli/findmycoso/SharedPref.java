@@ -35,14 +35,13 @@ public class SharedPref {
         return myPreferences.getBoolean("FirstBoot", true);
     }
 
-    public void setUser(FirebaseUser user) {
-        SharedPreferences.Editor editor = myPreferences.edit();
-        editor.putString("email", user.getEmail());
-        editor.putString("id", user.getUid());
-        editor.commit();
+    public boolean isProfileUpdated() {
+        return myPreferences.getBoolean("profileUpdated", false);
     }
 
-    public boolean isLogged(){
-        return (myPreferences.getString("email", null) != null && null != myPreferences.getString("id", null));
+    public void setProfileUpdated(){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putBoolean("profileUpdated", true);
+        editor.commit();
     }
 }

@@ -15,7 +15,7 @@
 
     <style name="AppThemeBackup" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#2196F3</item>
-        <item name="colorPrimaryDark">#1976D2</item>
+        <item name="colorPrimaryDark">#4f5bd5</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="backgroundcolor">#FCFCFC</item>
         <item name="boxbackground">#FFFFFF</item>
@@ -56,7 +56,7 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppThemeBackup">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

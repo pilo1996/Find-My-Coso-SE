@@ -99,16 +99,26 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-                            sharedPref.setUser(mAuth.getCurrentUser());
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
+                            if(mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName().equals(""))
+                                Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
+                            if(sharedPref.isProfileUpdated()){
+                                startActivity(new Intent(getApplicationContext(), Impostazioni.class));
+                                finish();
+                            }
+                            else{
+                                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                                finish();
+                            }
                         }
                         else {
                             progressBar.setVisibility(View.INVISIBLE);
                             login.setText(R.string.label_login);
                             login.setEnabled(true);
-
+                            layoutInputEmail.setError("Email o password invalidi.");
+                            layoutInputPassword.setError("Riprova.");
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -145,7 +155,6 @@ public class Login extends AppCompatActivity {
 
         }
     };
-    
 
     private boolean checkEmail(){
         String emailInput = layoutInputEmail.getEditText().getText().toString().trim();

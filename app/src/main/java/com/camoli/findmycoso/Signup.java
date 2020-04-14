@@ -128,7 +128,6 @@ public class Signup extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(getApplicationContext(), "Registrato con successo!", Toast.LENGTH_SHORT).show();
-                            sharedPref.setUser(mAuth.getCurrentUser());
                             int dim[] = new int[2];
                             turnBackToLogin.getLocationInWindow(dim);
                             i.putExtra("x", dim[0]+(turnBackToLogin.getWidth()/2));

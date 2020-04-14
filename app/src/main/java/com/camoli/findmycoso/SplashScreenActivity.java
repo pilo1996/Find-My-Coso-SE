@@ -53,11 +53,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
                 else{
                     FirebaseUser currentUser = mAuth.getCurrentUser();
-                    //decommentare per scopi di debug
-                    //currentUser = null;
                     if(currentUser != null){
-                        Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        if(mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName().equals(""))
+                            Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), Impostazioni.class));
                         finish();
                     }else {
                         startActivity(new Intent(SplashScreenActivity.this, Login.class));
