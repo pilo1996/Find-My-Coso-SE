@@ -43,11 +43,10 @@ public class UserProfile extends AppCompatActivity {
     private SharedPref sharedPref;
     private TextInputLayout nome_layout;
     private static final int CHOOSE_IMAGE = 101;
-    private String localProfileImg, photoProfile;
+    private String localProfileImg;
     private StorageReference mStorageRef;
     private Bitmap bitmap;
     private ProgressBar saveProgressBar, imgProgressBar;
-    private Boolean success = false;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private StorageReference profileImgRef;
@@ -90,10 +89,14 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveBtn.setText("");
+                saveBtn.setBackground(getDrawable(R.drawable.rounded_button_disabled));
+                saveBtn.setEnabled(false);
                 saveProgressBar.setVisibility(View.VISIBLE);
                 saveUserInformation();
-                saveBtn.setText(R.string.salva);
                 saveProgressBar.setVisibility(View.INVISIBLE);
+                saveBtn.setText(getString(R.string.salva));
+                saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
+                saveBtn.setEnabled(true);
             }
         });
 
@@ -179,6 +182,7 @@ public class UserProfile extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 localProfileImg = task.getResult().toString();
                                 Toast.makeText(getApplicationContext(), "Foto caricata", Toast.LENGTH_SHORT).show();
+                                imgProgressBar.setVisibility(View.INVISIBLE);
                                 saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
                                 saveBtn.setEnabled(true);
                             }
@@ -203,7 +207,6 @@ public class UserProfile extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 userPic.setImageBitmap(bitmap);
                 uploadToFirebaseStorage();
-                imgProgressBar.setVisibility(View.INVISIBLE);
             } catch (IOException e) {
                 System.out.println("Errore BITMAP");
             }

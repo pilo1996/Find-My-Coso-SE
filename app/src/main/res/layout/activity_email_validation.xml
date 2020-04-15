@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_login"
+    tools:context=".EmailValidation">
+
+    <TextView
+        android:id="@+id/textViewCheckMail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/controlla_la_tua_mail"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="35sp"
+        android:layout_marginTop="25dp"/>
+
+    <TextView
+        android:id="@+id/textViewInfoMail"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_height="wrap_content"
+        android:text="@string/per_poter_usare_l_applicazione_ndevi_convalidare_la_tua_email_fornita_durante_la_fase_di_registrazione"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/textViewCheckMail"
+        android:layout_marginTop="25dp"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/emailAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewInfoMail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/esempio_dominio_it"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold|italic" />
+
+    <ImageView
+        android:id="@+id/MailLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/mail"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/email_logo" />
+
+    <Button
+        android:id="@+id/BackToLogin"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/MailLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/ok_torna_al_login"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:enabled="true"/>
+
+    <ProgressBar
+        android:id="@+id/resendProgressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/resendEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
+
+
+    <Button
+        android:id="@+id/resendEmail"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/BackToLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
+        android:text="@string/non_hai_ricevuto_la_mail"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"/>
+
+</RelativeLayout>

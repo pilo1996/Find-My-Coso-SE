@@ -59,4 +59,11 @@
     <string name="logout">Logout</string>
     <string name="account_explanation">Puoi modificare foto profilo e nome, basta premere sul pulsante \'Aggiorna Profilo\'.</string>
     <string name="aggiorna_profilo">Aggiorna profilo</string>
+    <string name="controlla_la_tua_mail">Controlla la tua Mail!</string>
+    <string name="torna_al_login">Torna al login</string>
+    <string name="ok_torna_al_login">ok, torna al login!</string>
+    <string name="non_hai_ricevuto_la_mail">Non hai ricevuto la mail?</string>
+    <string name="esempio_dominio_it">esempio@dominio.it</string>
+    <string name="per_poter_usare_l_applicazione_ndevi_convalidare_la_tua_email_fornita_durante_la_fase_di_registrazione">Per poter usare l\'applicazione,\ndevi convalidare la tua email fornita durante la fase di registrazione:</string>
+    <string name="email_logo">Email logo</string>
 </resources>

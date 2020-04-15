@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -54,12 +56,25 @@ public class SplashScreenActivity extends AppCompatActivity {
                 else{
                     FirebaseUser currentUser = mAuth.getCurrentUser();
                     if(currentUser != null){
-                        if(mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName().equals(""))
+                        if(mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName().equals("")){
                             Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-                        else
+                        }
+                        else{
                             Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), Impostazioni.class));
-                        finish();
+                        }
+                        if(mAuth.getCurrentUser().isEmailVerified()){
+                            startActivity(new Intent(getApplicationContext(), Impostazioni.class));
+                            finish();
+                        }
+                        else {
+                            mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    startActivity(new Intent(getApplicationContext(), EmailValidation.class));
+                                    finish();
+                                }
+                            });
+                        }
                     }else {
                         startActivity(new Intent(SplashScreenActivity.this, Login.class));
                         finish();

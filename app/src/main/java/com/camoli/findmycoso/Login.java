@@ -103,13 +103,18 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
                             else
                                 Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
-                            if(sharedPref.isProfileUpdated()){
-                                startActivity(new Intent(getApplicationContext(), Impostazioni.class));
-                                finish();
-                            }
-                            else{
+                            if(mAuth.getCurrentUser().isEmailVerified()){
                                 startActivity(new Intent(getApplicationContext(), UserProfile.class));
                                 finish();
+                            }
+                            else {
+                                mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        startActivity(new Intent(getApplicationContext(), EmailValidation.class));
+                                        finish();
+                                    }
+                                });
                             }
                         }
                         else {
