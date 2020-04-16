@@ -7,6 +7,14 @@
     tools:context=".RegistraDispositivo"
     android:background="?attr/backgroundcolor">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:id="@+id/viewRegDevice">
+
+    </View>
+
     <TextView
         android:id="@+id/info1"
         android:layout_width="match_parent"

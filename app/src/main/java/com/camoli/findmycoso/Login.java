@@ -59,6 +59,8 @@ public class Login extends AppCompatActivity {
         layoutInputEmail = findViewById(R.id.email_input_layout);
         layoutInputPassword = findViewById(R.id.password_input_layout);
 
+        mAuth = FirebaseAuth.getInstance();
+
         if (savedInstanceState == null){
             background.setVisibility(View.INVISIBLE);
             final ViewTreeObserver viewTreeObserver = background.getViewTreeObserver();
@@ -137,12 +139,22 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openResetDialog();
+            }
+        });
+
         layoutInputEmail.getEditText().addTextChangedListener(loginTextWatcher);
         layoutInputPassword.getEditText().addTextChangedListener(loginTextWatcher);
 
-        mAuth = FirebaseAuth.getInstance();
     }
 
+    private void openResetDialog() {
+        ResetPasswordDialog reset = new ResetPasswordDialog();
+        reset.show(getSupportFragmentManager(), "reset password dialog");
+    }
 
 
     private TextWatcher loginTextWatcher = new TextWatcher() {

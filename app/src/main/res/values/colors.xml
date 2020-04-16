@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="black_overlay">#66000000</color>
     <color name="btn_bg">#d62976</color>
+    <color name="buttonLight">#424242</color>
 </resources>
