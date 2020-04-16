@@ -22,18 +22,6 @@ public class EmailValidation extends AppCompatActivity {
     private String email;
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
-            startActivity(new Intent(getApplicationContext(), Login.class));
-            finish();
-        }
-        else{
-            email = FirebaseAuth.getInstance().getCurrentUser().getEmail().toString();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_validation);
@@ -44,6 +32,12 @@ public class EmailValidation extends AppCompatActivity {
         progressBar = findViewById(R.id.resendProgressBar);
         emailAddress = findViewById(R.id.emailAddress);
 
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            startActivity(new Intent(getApplicationContext(), Login.class));
+            finish();
+        }
+
+        email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         emailAddress.setText(email);
 
         goBackToLogin.setOnClickListener(new View.OnClickListener() {

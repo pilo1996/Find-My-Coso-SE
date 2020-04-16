@@ -7,6 +7,7 @@ import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -34,10 +35,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.DarkModeFull);
         super.onCreate(savedInstanceState);
-
         View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_splash_screen);
@@ -63,7 +64,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
                         }
                         if(mAuth.getCurrentUser().isEmailVerified()){
-                            startActivity(new Intent(getApplicationContext(), Impostazioni.class));
+                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                             finish();
                         }
                         else {
@@ -90,8 +91,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         final int viola = Color.parseColor("#962fbf");
         final int blu = Color.parseColor("#4f5bd5");
 
-
-        final ArgbEvaluator evaluator = new ArgbEvaluator();
+        @SuppressLint("RestrictedApi") final ArgbEvaluator evaluator = new ArgbEvaluator();
         View preloader = activity.findViewById(R.id.gradientPreloaderView);
         final GradientDrawable gradient;
         if(android.os.Build.VERSION.SDK_INT >= 29){
@@ -99,7 +99,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         }else{
             gradient = new GradientDrawable();
         }
-
 
         ValueAnimator animator = TimeAnimator.ofFloat(0.0f, 1.0f);
         animator.setDuration(SPLASH_TIME_OUT);
@@ -109,10 +108,10 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 Float fraction = valueAnimator.getAnimatedFraction();
-                int newArancio = (int) evaluator.evaluate(fraction, arancione, blu);
-                int newRosso = (int) evaluator.evaluate(fraction, rosso, arancione);
-                int newViola = (int) evaluator.evaluate(fraction, viola, rosso);
-                int newBlu = (int) evaluator.evaluate(fraction, blu, viola);
+                @SuppressLint("RestrictedApi") int newArancio = (int) evaluator.evaluate(fraction, arancione, blu);
+                @SuppressLint("RestrictedApi") int newRosso = (int) evaluator.evaluate(fraction, rosso, arancione);
+                @SuppressLint("RestrictedApi") int newViola = (int) evaluator.evaluate(fraction, viola, rosso);
+                @SuppressLint("RestrictedApi") int newBlu = (int) evaluator.evaluate(fraction, blu, viola);
                 int[] newArray = {newArancio, newRosso, newViola, newBlu};
                 gradient.setColors(newArray);
             }

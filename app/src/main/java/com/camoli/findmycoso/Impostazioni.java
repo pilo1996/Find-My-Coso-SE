@@ -35,6 +35,7 @@ public class Impostazioni extends AppCompatActivity {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.INTERNET,
+            Manifest.permission.READ_PHONE_STATE,
     };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
@@ -95,7 +96,7 @@ public class Impostazioni extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
                 Intent i = new Intent(getApplicationContext(), Login.class);
-                int dim[] = new int[2];
+                int[] dim = new int[2];
                 logOutBtn.getLocationInWindow(dim);
                 i.putExtra("x", dim[0]+(logOutBtn.getWidth()/2));
                 i.putExtra("y", dim[1]+(logOutBtn.getHeight()/2));
@@ -118,8 +119,7 @@ public class Impostazioni extends AppCompatActivity {
 
     public static boolean hasPermissions(Context context, String... permissions) {
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(context, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }

@@ -1,36 +1,26 @@
 <resources>
 
-    <!-- Light Mode -->
+    <!-- Light Mode for standard activity -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#2196F3</item>
         <item name="colorPrimaryDark">#4f5bd5</item>
-        <item name="colorAccent">#FFFFFF</item>
+        <item name="colorAccent">#808080</item>
         <item name="backgroundcolor">#FCFCFC</item>
         <item name="boxbackground">#FFFFFF</item>
         <item name="textcolor">#808080</item>
+        <item name="hintcolor">#808080</item>
         <item name="tintcolor">#000000</item>
         <item name="buttoncolor">#673AB7</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
-    <style name="AppThemeBackup" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#2196F3</item>
-        <item name="colorPrimaryDark">#4f5bd5</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="backgroundcolor">#FCFCFC</item>
-        <item name="boxbackground">#FFFFFF</item>
-        <item name="textcolor">#808080</item>
-        <item name="tintcolor">#000000</item>
-        <item name="buttoncolor">#673AB7</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-    </style>
-
-    <!-- Dark Mode -->
+    <!-- Dark Mode for standard activity -->
     <style name="DarkMode" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#212121</item>
         <item name="colorPrimaryDark">#000000</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">#ffffff</item>
         <item name="backgroundcolor">#303030</item>
+        <item name="hintcolor">#808080</item>
         <item name="boxbackground">#424242</item>
         <item name="textcolor">#ffffff</item>
         <item name="tintcolor">#ffffff</item>
@@ -38,6 +28,56 @@
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
+    <!-- Light Mode for Maps Activity-->
+    <style name="AppThemeBackup" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#2196F3</item>
+        <item name="colorPrimaryDark">#4f5bd5</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundcolor">#FCFCFC</item>
+        <item name="boxbackground">#FFFFFF</item>
+        <item name="textcolor">#808080</item>
+        <item name="hintcolor">#808080</item>
+        <item name="tintcolor">#000000</item>
+        <item name="buttoncolor">#673AB7</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <!-- Dark Mode For Maps Activity-->
+    <style name="DarkModeBackup" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#212121</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#ffffff</item>
+        <item name="backgroundcolor">#303030</item>
+        <item name="hintcolor">#808080</item>
+        <item name="boxbackground">#424242</item>
+        <item name="textcolor">#ffffff</item>
+        <item name="tintcolor">#ffffff</item>
+        <item name="buttoncolor">#673AB7</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <!-- Dark Mode for Full Screen Activities-->
+    <style name="DarkModeFull" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#212121</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#ffffff</item>
+        <item name="backgroundcolor">#303030</item>
+        <item name="hintcolor">#808080</item>
+        <item name="boxbackground">#424242</item>
+        <item name="textcolor">#ffffff</item>
+        <item name="tintcolor">#ffffff</item>
+        <item name="buttoncolor">#673AB7</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>

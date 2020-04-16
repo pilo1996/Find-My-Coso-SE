@@ -66,4 +66,15 @@
     <string name="esempio_dominio_it">esempio@dominio.it</string>
     <string name="per_poter_usare_l_applicazione_ndevi_convalidare_la_tua_email_fornita_durante_la_fase_di_registrazione">Per poter usare l\'applicazione,\ndevi convalidare la tua email fornita durante la fase di registrazione:</string>
     <string name="email_logo">Email logo</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="ultime_posizioni_dei_tuoi_dispositivi">Ultime posizioni dei tuoi dispositivi</string>
+    <string name="questo_dispositivo">Questo dispositivo,</string>
+    <string name="non">NON è</string>
+    <string name="registrato_nel_tuo_account">registrato nel tuo account.</string>
+    <string name="per_poter_registrare_le_posizioni_di_questo_dispositivo_devi_aggiungerlo_al_tuo_account">Per poter registrare le posizioni di questo dispositivo, devi aggiungerlo al tuo account.</string>
+    <string name="uuid">UUID:</string>
+    <string name="nome_del_dispositivo">Nome del dispositivo</string>
+    <string name="registra_dispositivo">Registra dispositivo</string>
+    <string name="clicca_sull_immagine_sottostante_per_selezionare_una_foto_profilo">Clicca sull\'immagine sottostante per selezionare una foto profilo.</string>
+    <string name="account">Account</string>
 </resources>

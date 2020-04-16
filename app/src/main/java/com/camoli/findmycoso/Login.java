@@ -41,6 +41,7 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.DarkModeFull);
         super.onCreate(savedInstanceState);
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -104,8 +105,14 @@ public class Login extends AppCompatActivity {
                             else
                                 Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
                             if(mAuth.getCurrentUser().isEmailVerified()){
-                                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                                finish();
+                                if(!sharedPref.isProfileUpdated()){
+                                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                                    finish();
+                                }
+                                else {
+                                    startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                    finish();
+                                }
                             }
                             else {
                                 mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {

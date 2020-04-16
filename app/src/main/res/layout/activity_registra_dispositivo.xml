@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistraDispositivo"
+    android:background="?attr/backgroundcolor">
+
+    <TextView
+        android:id="@+id/info1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/questo_dispositivo"
+        android:textColor="?attr/textcolor"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/registeredStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/non"
+        android:textStyle="bold"
+        android:textColor="?attr/textcolor"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/info1"
+        android:layout_marginTop="5dp"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/info2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registrato_nel_tuo_account"
+        android:textColor="?attr/textcolor"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/registeredStatus"
+        android:layout_marginTop="5dp"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/info3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/per_poter_registrare_le_posizioni_di_questo_dispositivo_devi_aggiungerlo_al_tuo_account"
+        android:textColor="?attr/textcolor"
+        android:textAlignment="center"
+        android:textStyle="italic"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/info2"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="60dp"
+        android:textSize="18sp"
+        android:layout_above="@+id/deviceNameLayout"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/deviceNameLayout"
+        android:layout_width="match_parent"
+        android:layout_marginStart="60dp"
+        android:layout_centerInParent="true"
+        android:textColorHint="?attr/textcolor"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/deviceNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/nome_del_dispositivo"
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="?attr/textcolor"
+            android:textColor="?attr/textcolor"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/uuidLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/uuid"
+        android:textColor="?attr/textcolor"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/deviceNameLayout"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/regDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="26dp"
+        android:layout_marginEnd="26dp"
+        android:hapticFeedbackEnabled="true"
+        android:backgroundTint="@color/btn_bg"
+        android:src="@mipmap/white_plus"
+        app:borderWidth="0dp"
+        />
+
+
+</RelativeLayout>

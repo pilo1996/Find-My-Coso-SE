@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/controlla_la_tua_mail"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -21,25 +21,25 @@
 
     <TextView
         android:id="@+id/textViewInfoMail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_marginStart="60dp"
         android:layout_height="wrap_content"
         android:text="@string/per_poter_usare_l_applicazione_ndevi_convalidare_la_tua_email_fornita_durante_la_fase_di_registrazione"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
         android:textColor="@android:color/white"
-        android:layout_below="@+id/textViewCheckMail"
-        android:layout_marginTop="25dp"
+        android:layout_above="@id/emailAddress"
+        android:layout_marginBottom="25dp"
         android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/emailAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewInfoMail"
+        android:layout_above="@id/MailLogo"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
         android:text="@string/esempio_dominio_it"
         android:textAlignment="center"
         android:textColor="@android:color/white"
@@ -51,8 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/mail"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
         android:contentDescription="@string/email_logo" />
 
     <Button

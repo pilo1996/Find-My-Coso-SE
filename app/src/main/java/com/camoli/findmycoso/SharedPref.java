@@ -35,7 +35,7 @@ public class SharedPref {
         return myPreferences.getBoolean("FirstBoot", true);
     }
 
-    public boolean isProfileUpdated() {
+    public Boolean isProfileUpdated() {
         return myPreferences.getBoolean("profileUpdated", false);
     }
 

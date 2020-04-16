@@ -29,13 +29,15 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"/>
 
     <LinearLayout
         android:id="@+id/dotLayout"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignTop="@id/btn_next"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
         android:orientation="horizontal"></LinearLayout>
 
@@ -47,8 +49,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:background="@null"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="15dp"
+        android:textSize="20sp"
         android:text="@string/avanti"
         android:textColor="@android:color/white"/>
 
@@ -59,8 +62,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="@null"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="15dp"
+        android:textSize="20sp"
         android:text="@string/salta"
         android:textColor="@android:color/white"/>
 

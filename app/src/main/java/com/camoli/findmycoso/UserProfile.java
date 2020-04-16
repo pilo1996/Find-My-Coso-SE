@@ -53,6 +53,7 @@ public class UserProfile extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        setTheme(R.style.DarkModeFull);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         getSupportActionBar().hide();
@@ -103,7 +104,9 @@ public class UserProfile extends AppCompatActivity {
         goHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Impostazioni.class));
+                if(!user.getDisplayName().equals(""))
+                    sharedPref.setProfileUpdated();
+                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                 finish();
             }
         });
