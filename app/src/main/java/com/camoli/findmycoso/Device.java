@@ -6,6 +6,13 @@ public class Device {
     private String id;
     private String userEmail;
 
+    public  Device(){
+        uuid = "";
+        name = "";
+        id = "";
+        userEmail = "";
+    }
+
     public Device(String uuid, String name, String id, String userEmail) {
         this.uuid = uuid;
         this.name = name;

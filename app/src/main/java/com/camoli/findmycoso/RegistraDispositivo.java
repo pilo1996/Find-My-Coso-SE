@@ -2,6 +2,7 @@ package com.camoli.findmycoso;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -23,8 +24,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static com.google.android.material.snackbar.Snackbar.make;
 
@@ -32,12 +40,35 @@ public class RegistraDispositivo extends AppCompatActivity {
 
     private FloatingActionButton fabRegDevice;
     private final int REQUEST_READ_PHONE_STATE = 1;
-    private String UUID, manufacturerModel;
+    private String UUID, manufacturerModel, userEmail;
     private TextInputLayout nameDeviceLayout;
-    private TextView UUIDdisplay;
+    private TextView UUIDdisplay, registrationStatus;
     private Toolbar toolbar;
     private SharedPref sharedpref;
     private DatabaseReference databaseReferenceDevice;
+    private List<Device> deviceList = new ArrayList<>();
+    private View snackbarCoordinator;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        deviceList.clear();
+        String temp = databaseReferenceDevice.push().getKey();
+        databaseReferenceDevice.child(temp).removeValue();
+        databaseReferenceDevice.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
+                    deviceList.add(dev.getValue(Device.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Errore imprevisto nel scaricare i dati...");
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +85,22 @@ public class RegistraDispositivo extends AppCompatActivity {
         //toolbar = findViewById(R.id.toolbar);
         //setActionBar(toolbar);
         UUIDdisplay = findViewById(R.id.uuidLabel);
-        nameDeviceLayout = (TextInputLayout) findViewById(R.id.deviceNameLayout);
+        nameDeviceLayout = findViewById(R.id.deviceNameLayout);
+        snackbarCoordinator = findViewById(R.id.coordinatorSnackbar);
 
         databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("devices");
-
+        userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         manufacturerModel = getDeviceName();
         DeviceUuidFactory deviceUuidFactory = new DeviceUuidFactory(this);
         UUID = deviceUuidFactory.getDeviceUuid().toString().trim();
+
+        //TODO aggiustare che fa vedere lo stato di già registrato
+        registrationStatus = findViewById(R.id.registeredStatus);
+        if(deviceExistsInThisAccount()){
+            System.out.println("entra qui.");
+            registrationStatus.setText("è");
+            recreate();
+        }
 
         if(manufacturerModel != null){
             nameDeviceLayout.getEditText().setText(manufacturerModel);
@@ -84,43 +124,47 @@ public class RegistraDispositivo extends AppCompatActivity {
                 }
                 else
                     nameDeviceLayout.setErrorEnabled(false);
-                //TODO controllare se è già presente un dispositivo con uguale UUID in questo account (uguale email).
-                String id = databaseReferenceDevice.push().getKey();
-                if(id == null)
-                    showSnackBarFailure("Errore imprevisto.");
-                else{
-                    Device device = new Device(UUID, deviceName, id, FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                    databaseReferenceDevice.child(id).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
-                                showSnackBarSuccess("Dispositivo aggiunto al tuo account.");
-                            else
-                                showSnackBarFailure("Errore imprevisto.");
-                        }
-                    });
+
+                if(deviceExistsInThisAccount())
+                    showSnackBarCustom("Dispositivo già registrato.", "#ffa500");
+                else {
+                    String id = databaseReferenceDevice.push().getKey();
+                    if(id == null)
+                        showSnackBarCustom("Errore imprevisto.", Color.RED+"");
+                    else{
+                        Device device = new Device(UUID, deviceName, id, userEmail);
+                        databaseReferenceDevice.child(id).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful())
+                                    showSnackBarCustom("Dispositivo aggiunto al tuo account.", "#2fd339");
+                                else
+                                    showSnackBarCustom("Errore imprevisto.", "#ff0000");
+                            }
+                        });
+                    }
                 }
             }
         });
     }
 
-    public void showSnackBarSuccess(String message){
-        Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), message, Snackbar.LENGTH_LONG);
+    private boolean deviceExistsInThisAccount() {
+        for (Device temp: deviceList){
+            if (temp.getUuid().equals(UUID) && temp.getuserEmail().equals(userEmail))
+                return true;
+        }
+        return false;
+    }
+
+    public void showSnackBarCustom(String message, String color){
+        Snackbar snackbar = Snackbar.make(snackbarCoordinator, message, Snackbar.LENGTH_LONG);
         View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#2fd339"));
+        snackbarView.setBackgroundColor(Color.parseColor(color));
         TextView textView = snackbarView.findViewById(R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }
 
-    public void showSnackBarFailure(String message){
-        Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), message, Snackbar.LENGTH_LONG);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#2fd339"));
-        TextView textView = snackbarView.findViewById(R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
-    }
 
     public String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
