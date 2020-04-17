@@ -32,6 +32,10 @@ import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.sql.Timestamp;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -49,8 +53,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
     };
     private SharedPref sharedPref;
+    private DatabaseReference databaseReferenceDevices;
+    private LatLng location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fabSettings = findViewById(R.id.settings);
         fabAddDevice = findViewById(R.id.addDevice);
         fabQr = findViewById(R.id.qr);
+
+        System.out.println("id: "+sharedPref.getThisDevice().getId());
+
+        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference(sharedPref.getThisDevice().getId());
 
         fabSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,15 +108,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     requestPermissions(getRequiredPermissions(), REQUEST_CODE);
             }
         }
+
         Task<Location> task = fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                LatLng location = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                location = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                 mMap.addMarker(new MarkerOptions().position(location).title("Posizione Attuale"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+                System.out.println("************entra qui********************");
+                //final PositionDevice posDev = new PositionDevice(sharedPref.getThisDevice(), location[0], String.valueOf(System.currentTimeMillis()));
+                final Position position = new Position(
+                        location.latitude+"",
+                        location.longitude+"",
+                        String.valueOf(System.currentTimeMillis()),
+                        sharedPref.getThisDevice().getId(),
+                        sharedPref.getThisDevice().getUuid()
+                );
+                databaseReferenceDevices.setValue(position);
+                //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
             }
         });
-    }
+            }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

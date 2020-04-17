@@ -36,6 +36,8 @@ public class Impostazioni extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
     };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 

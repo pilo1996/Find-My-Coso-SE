@@ -146,7 +146,7 @@ public class RegistraDispositivo extends AppCompatActivity {
                     if(id == null)
                         showSnackBarCustom("Errore imprevisto.", Color.RED+"");
                     else{
-                        Device device = new Device(UUID, deviceName, id, userEmail);
+                        final Device device = new Device(UUID, deviceName, id, userEmail);
                         databaseReferenceDevice.child(id).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -158,6 +158,7 @@ public class RegistraDispositivo extends AppCompatActivity {
                                     showSnackBarCustom("Errore imprevisto.", "#ff0000");
                             }
                         });
+                        sharedpref.setThisDevice(device);
                     }
                 }
                 waitingProgress.setVisibility(View.INVISIBLE);
@@ -168,7 +169,7 @@ public class RegistraDispositivo extends AppCompatActivity {
     private boolean deviceExistsInThisAccount() {
         for (Device temp: deviceList){
             if (temp.getUuid().equals(UUID) && temp.getuserEmail().equals(userEmail)){
-
+                sharedpref.setThisDevice(temp);
                 registrationStatus.setText("è");
                 return true;
             }

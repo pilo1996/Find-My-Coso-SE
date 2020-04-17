@@ -46,6 +46,8 @@ public class Login extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
     };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
@@ -97,8 +99,9 @@ public class Login extends AppCompatActivity {
         if(!sharedPref.permitsAlreadyObtained()){
             if (!hasPermissions(getApplicationContext(), getRequiredPermissions())) {
                 if (!hasPermissions(getApplicationContext(), getRequiredPermissions())) {
-                    if (Build.VERSION.SDK_INT >= 23)
+                    if (Build.VERSION.SDK_INT >= 23){
                         requestPermissions(getRequiredPermissions(), REQUEST_CODE_REQUIRED_PERMISSIONS);
+                    }
                 }
             }
         }
@@ -271,6 +274,7 @@ public class Login extends AppCompatActivity {
                     return;
                 }
             }
+            sharedPref.setPermissionsAsObtained();
             recreate();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -54,4 +54,27 @@ public class SharedPref {
         editor.putBoolean("permissionsObtained", true);
         editor.commit();
     }
+
+    public Device getThisDevice(){
+        Device thisOne = new Device();
+        String uuid = myPreferences.getString("UUID", "error");
+        String name = myPreferences.getString("deviceName", "error");
+        String id = myPreferences.getString("idDeviceDatabase", "error");
+        String email = myPreferences.getString("emailDevice", "error");
+        if (uuid.equals("error") || name.equals("error") || id.equals("error") || email.equals("error"))
+            return thisOne;
+        else{
+            thisOne = new Device(uuid, name, id, email);
+            return thisOne;
+        }
+    }
+
+    public void setThisDevice(Device thisOne){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putString("UUID", thisOne.getUuid());
+        editor.putString("deviceName", thisOne.getName());
+        editor.putString("idDeviceDatabase", thisOne.getId());
+        editor.putString("emailDevice", thisOne.getuserEmail());
+        editor.commit();
+    }
 }

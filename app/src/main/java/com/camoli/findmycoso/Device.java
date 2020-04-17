@@ -7,10 +7,10 @@ public class Device {
     private String userEmail;
 
     public  Device(){
-        uuid = "";
-        name = "";
-        id = "";
-        userEmail = "";
+        uuid = "error";
+        name = "error";
+        id = "error";
+        userEmail = "error";
     }
 
     public Device(String uuid, String name, String id, String userEmail) {
