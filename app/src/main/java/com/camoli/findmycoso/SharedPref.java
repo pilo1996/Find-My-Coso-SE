@@ -44,4 +44,14 @@ public class SharedPref {
         editor.putBoolean("profileUpdated", true);
         editor.commit();
     }
+
+    public Boolean permitsAlreadyObtained(){
+        return myPreferences.getBoolean("permissionsObtained", false);
+    }
+
+    public void setPermissionsAsObtained(){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putBoolean("permissionsObtained", true);
+        editor.commit();
+    }
 }

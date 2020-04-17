@@ -40,8 +40,8 @@
         <item name="tintcolor">#000000</item>
         <item name="buttoncolor">#673AB7</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
     <!-- Dark Mode For Maps Activity-->
@@ -56,8 +56,8 @@
         <item name="tintcolor">#ffffff</item>
         <item name="buttoncolor">#673AB7</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
     <!-- Dark Mode for Full Screen Activities-->

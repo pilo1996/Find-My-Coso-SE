@@ -1,19 +1,25 @@
 package com.camoli.findmycoso;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;

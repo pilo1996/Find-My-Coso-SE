@@ -89,15 +89,9 @@ public class UserProfile extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveBtn.setText("");
-                saveBtn.setBackground(getDrawable(R.drawable.rounded_button_disabled));
-                saveBtn.setEnabled(false);
-                saveProgressBar.setVisibility(View.VISIBLE);
+                showProgressSave();
                 saveUserInformation();
-                saveProgressBar.setVisibility(View.INVISIBLE);
-                saveBtn.setText(getString(R.string.salva));
-                saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
-                saveBtn.setEnabled(true);
+                hideProgressSave();
             }
         });
 
@@ -119,6 +113,22 @@ public class UserProfile extends AppCompatActivity {
                 showImageChooser();
             }
         });
+    }
+
+    private void showProgressSave(){
+        saveBtn.setVisibility(View.INVISIBLE);
+        //saveBtn.setText("");
+        //saveBtn.setBackground(getDrawable(R.drawable.rounded_button_disabled));
+        saveProgressBar.setVisibility(View.VISIBLE);
+        //saveBtn.setEnabled(false);
+    }
+
+    private void hideProgressSave(){
+       // saveBtn.setEnabled(true);
+        saveProgressBar.setVisibility(View.INVISIBLE);
+        //saveBtn.setText(getString(R.string.salva));
+        //saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
+        saveBtn.setVisibility(View.VISIBLE);
     }
 
     private void goHomeResumeState(){

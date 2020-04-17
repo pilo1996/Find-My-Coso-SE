@@ -7,13 +7,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -48,13 +51,12 @@ public class RegistraDispositivo extends AppCompatActivity {
     private DatabaseReference databaseReferenceDevice;
     private List<Device> deviceList = new ArrayList<>();
     private View snackbarCoordinator;
+    private ProgressBar waitingProgress;
 
     @Override
     protected void onStart() {
         super.onStart();
         deviceList.clear();
-        String temp = databaseReferenceDevice.push().getKey();
-        databaseReferenceDevice.child(temp).removeValue();
         databaseReferenceDevice.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -68,6 +70,8 @@ public class RegistraDispositivo extends AppCompatActivity {
                 System.out.println("Errore imprevisto nel scaricare i dati...");
             }
         });
+        String temp = databaseReferenceDevice.push().getKey();
+        databaseReferenceDevice.child(temp).setValue(null);
     }
 
     @Override
@@ -77,7 +81,6 @@ public class RegistraDispositivo extends AppCompatActivity {
             setTheme(R.style.DarkMode);
         else
             setTheme(R.style.AppTheme);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registra_dispositivo);
         getSupportActionBar().setTitle(getString(R.string.registra_dispositivo));
@@ -87,6 +90,8 @@ public class RegistraDispositivo extends AppCompatActivity {
         UUIDdisplay = findViewById(R.id.uuidLabel);
         nameDeviceLayout = findViewById(R.id.deviceNameLayout);
         snackbarCoordinator = findViewById(R.id.coordinatorSnackbar);
+        fabRegDevice = findViewById(R.id.regDevice);
+        waitingProgress = findViewById(R.id.waitingBar);
 
         databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("devices");
         userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -96,11 +101,17 @@ public class RegistraDispositivo extends AppCompatActivity {
 
         //TODO aggiustare che fa vedere lo stato di già registrato
         registrationStatus = findViewById(R.id.registeredStatus);
-        if(deviceExistsInThisAccount()){
-            System.out.println("entra qui.");
-            registrationStatus.setText("è");
-            recreate();
-        }
+
+        new Handler().postDelayed(new Runnable() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void run() {
+                fabRegDevice.setVisibility(View.VISIBLE);
+                deviceExistsInThisAccount();
+                waitingProgress.setVisibility(View.INVISIBLE);
+            }
+        }, 5000);
+
 
         if(manufacturerModel != null){
             nameDeviceLayout.getEditText().setText(manufacturerModel);
@@ -113,10 +124,11 @@ public class RegistraDispositivo extends AppCompatActivity {
         else
             UUIDdisplay.setText(UUIDdisplay.getText().toString().concat("Errore."));
 
-        fabRegDevice = findViewById(R.id.regDevice);
+
         fabRegDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                waitingProgress.setVisibility(View.VISIBLE);
                 String deviceName = nameDeviceLayout.getEditText().getText().toString().trim();
                 if(deviceName.equals("")){
                     nameDeviceLayout.setErrorEnabled(true);
@@ -125,8 +137,10 @@ public class RegistraDispositivo extends AppCompatActivity {
                 else
                     nameDeviceLayout.setErrorEnabled(false);
 
-                if(deviceExistsInThisAccount())
+                if(deviceExistsInThisAccount()) {
+                    registrationStatus.setText("è");
                     showSnackBarCustom("Dispositivo già registrato.", "#ffa500");
+                }
                 else {
                     String id = databaseReferenceDevice.push().getKey();
                     if(id == null)
@@ -136,22 +150,28 @@ public class RegistraDispositivo extends AppCompatActivity {
                         databaseReferenceDevice.child(id).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
+                                if(task.isSuccessful()){
+                                    registrationStatus.setText("è");
                                     showSnackBarCustom("Dispositivo aggiunto al tuo account.", "#2fd339");
+                                }
                                 else
                                     showSnackBarCustom("Errore imprevisto.", "#ff0000");
                             }
                         });
                     }
                 }
+                waitingProgress.setVisibility(View.INVISIBLE);
             }
         });
     }
 
     private boolean deviceExistsInThisAccount() {
         for (Device temp: deviceList){
-            if (temp.getUuid().equals(UUID) && temp.getuserEmail().equals(userEmail))
+            if (temp.getUuid().equals(UUID) && temp.getuserEmail().equals(userEmail)){
+
+                registrationStatus.setText("è");
                 return true;
+            }
         }
         return false;
     }
