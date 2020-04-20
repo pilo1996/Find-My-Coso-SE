@@ -21,14 +21,14 @@
     <string name="salta">Salta</string>
     <string name="benvenuto">Benvenuto in</string>
     <string name="in_questa_applicazione_potrai_localizzare_i_tuoi_dispositivi_android">In questa applicazione, potrai localizzare i tuoi dispositivi Android™</string>
-    <string name="tutto_tramite_un_solo_account">...Tutto tramite un solo account!</string>
+    <string name="tutto_tramite_un_solo_account">…Tutto tramite un solo account!</string>
     <string name="per_ulteriori_informazioni_visita">Per ulteriori informazioni visita:</string>
     <string name="camoli_ns0_it">camoli.ns0.it</string>
     <string name="user_icon">User icon</string>
     <string name="text_logo">text_logo</string>
     <string name="localizza_i_tuoi_dispositivi">Localizza i tuoi dispositivi</string>
     <string name="todo">TODO</string>
-    <string name="consultare_lo_storico_delle_loro_posizioni">Consultare lo storico delle loro posizioni...</string>
+    <string name="consultare_lo_storico_delle_loro_posizioni">Consultare lo storico delle loro posizioni…</string>
     <string name="todofhgfh">TODOfhgfh</string>
     <string name="label_login">Login</string>
     <string name="label_register">Registrazione</string>
@@ -88,4 +88,10 @@
     <string name="annulla">Annulla</string>
     <string name="invia">Invia</string>
     <string name="reset_password">Reset password</string>
+    <string name="mappa_posizioni">Mappa posizioni</string>
+    <string name="nome_dispositivo">Nome Dispositivo</string>
+    <string name="smartphone_icon">smartphone icon</string>
+    <string name="id_dispositivo">Id dispositivo</string>
+    <string name="sei_il_proprietario_di_questo_dispositivo">Sei il proprietario di questo dispositivo.</string>
+    <string name="blank" />
 </resources>

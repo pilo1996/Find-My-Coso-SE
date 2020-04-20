@@ -2,7 +2,6 @@ package com.camoli.findmycoso;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -11,31 +10,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -59,6 +63,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SharedPref sharedPref;
     private DatabaseReference databaseReferenceDevices;
     private LatLng location;
+    private List<Position> locationsList = new ArrayList<>();
+    private TextView deviceName;
+    private String selectedDeviceName;
+    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +82,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fabSettings = findViewById(R.id.settings);
         fabAddDevice = findViewById(R.id.addDevice);
         fabQr = findViewById(R.id.qr);
+        deviceName = findViewById(R.id.selectedDevice);
 
-        System.out.println("id: "+sharedPref.getThisDevice().getId());
+        if(sharedPref.getSelectedDevice().getId().equals("error"))
+            selectedDeviceName = sharedPref.getThisDevice().getName();
+        else
+            selectedDeviceName = sharedPref.getSelectedDevice().getName();
+        deviceName.setText(selectedDeviceName);
 
-        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference(sharedPref.getThisDevice().getId());
+        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getThisDevice().getId());
 
         fabSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +106,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+
+        deviceName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                DeviceBottomSheetSelector bottomSheetSelector = new DeviceBottomSheetSelector(i);
+                bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
+            }
+        });
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -113,10 +136,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 location = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                mMap.addMarker(new MarkerOptions().position(location).title("Posizione Attuale"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
-                System.out.println("************entra qui********************");
-                //final PositionDevice posDev = new PositionDevice(sharedPref.getThisDevice(), location[0], String.valueOf(System.currentTimeMillis()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+
+                //save location in the real-time database
                 final Position position = new Position(
                         location.latitude+"",
                         location.longitude+"",
@@ -124,16 +146,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         sharedPref.getThisDevice().getId(),
                         sharedPref.getThisDevice().getUuid()
                 );
-                databaseReferenceDevices.setValue(position);
-                //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+                databaseReferenceDevices.child(position.getDayTime()).setValue(position);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        locationsList.clear();
+        databaseReferenceDevices.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
+                    locationsList.add(dev.getValue(Position.class));
+                }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Errore imprevisto nel scaricare i dati delle ultime posizioni...");
+            }
+        });
+        String temp = databaseReferenceDevices.push().getKey();
+        databaseReferenceDevices.child(temp).setValue(null);
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if(sharedPref.getDarkModeState())
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night));
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.setBuildingsEnabled(false);
+        mMap.setMyLocationEnabled(true);
         fetchLastLocation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addPreviousLocations();
+            }
+        }, 3500);
+    }
+
+    private void addPreviousLocations() {
+        for (Position temp : locationsList){
+            MarkerOptions marker = new MarkerOptions();
+            marker.position(new LatLng(Double.parseDouble(temp.getLatitude()), Double.parseDouble(temp.getLongitude())));
+            Date data = new Date();
+            data.setTime(Long.parseLong(temp.getDayTime()));
+            marker.title(data.toString());
+            //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.registered_position_marker));
+            mMap.addMarker(marker);
+        }
     }
 
     protected String[] getRequiredPermissions() {

@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -27,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +54,8 @@ public class RegistraDispositivo extends AppCompatActivity {
     private List<Device> deviceList = new ArrayList<>();
     private View snackbarCoordinator;
     private ProgressBar waitingProgress;
+    private FirebaseUser user;
+    private String newID;
 
     @Override
     protected void onStart() {
@@ -70,7 +74,8 @@ public class RegistraDispositivo extends AppCompatActivity {
                 System.out.println("Errore imprevisto nel scaricare i dati...");
             }
         });
-        String temp = databaseReferenceDevice.push().getKey();
+
+        String temp = databaseReferenceDevice.child(user.getUid()).push().getKey();
         databaseReferenceDevice.child(temp).setValue(null);
     }
 
@@ -92,15 +97,20 @@ public class RegistraDispositivo extends AppCompatActivity {
         snackbarCoordinator = findViewById(R.id.coordinatorSnackbar);
         fabRegDevice = findViewById(R.id.regDevice);
         waitingProgress = findViewById(R.id.waitingBar);
+        registrationStatus = findViewById(R.id.registeredStatus);
 
-        databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("devices");
-        userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            startActivity(new Intent(this, Login.class));
+            finish();
+        }
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        userEmail = user.getEmail();
+        databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("users");
+
         manufacturerModel = getDeviceName();
         DeviceUuidFactory deviceUuidFactory = new DeviceUuidFactory(this);
         UUID = deviceUuidFactory.getDeviceUuid().toString().trim();
-
-        //TODO aggiustare che fa vedere lo stato di già registrato
-        registrationStatus = findViewById(R.id.registeredStatus);
 
         new Handler().postDelayed(new Runnable() {
             @SuppressLint("RestrictedApi")
@@ -112,10 +122,9 @@ public class RegistraDispositivo extends AppCompatActivity {
             }
         }, 5000);
 
-
         if(manufacturerModel != null){
             nameDeviceLayout.getEditText().setText(manufacturerModel);
-            if(UUID == null || UUID == "")
+            if(UUID == null || UUID.equals(""))
                 UUID = manufacturerModel.replaceAll(" ", "").concat(""+System.currentTimeMillis());
         }
 
@@ -142,12 +151,13 @@ public class RegistraDispositivo extends AppCompatActivity {
                     showSnackBarCustom("Dispositivo già registrato.", "#ffa500");
                 }
                 else {
-                    String id = databaseReferenceDevice.push().getKey();
-                    if(id == null)
+                    DatabaseReference temp = databaseReferenceDevice.push();
+                    newID = temp.getKey();
+                    if(newID == null)
                         showSnackBarCustom("Errore imprevisto.", Color.RED+"");
                     else{
-                        final Device device = new Device(UUID, deviceName, id, userEmail);
-                        databaseReferenceDevice.child(id).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        final Device device = new Device(UUID, deviceName, newID, userEmail);
+                        databaseReferenceDevice.child(user.getUid()).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
@@ -159,6 +169,7 @@ public class RegistraDispositivo extends AppCompatActivity {
                             }
                         });
                         sharedpref.setThisDevice(device);
+                        sharedpref.setSelectedDevice(device);
                     }
                 }
                 waitingProgress.setVisibility(View.INVISIBLE);
@@ -168,10 +179,12 @@ public class RegistraDispositivo extends AppCompatActivity {
 
     private boolean deviceExistsInThisAccount() {
         for (Device temp: deviceList){
-            if (temp.getUuid().equals(UUID) && temp.getuserEmail().equals(userEmail)){
-                sharedpref.setThisDevice(temp);
-                registrationStatus.setText("è");
-                return true;
+            if (temp.getuserEmail().equals(userEmail)){
+                if (temp.getUuid().equals(UUID)){
+                    sharedpref.setThisDevice(new Device(temp.getUuid(), temp.getName(), newID, temp.getuserEmail()));
+                    registrationStatus.setText("è");
+                    return true;
+                }
             }
         }
         return false;

@@ -77,4 +77,27 @@ public class SharedPref {
         editor.putString("emailDevice", thisOne.getuserEmail());
         editor.commit();
     }
+
+    public void setSelectedDevice(Device selectedDevice){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putString("selectedDevice-UUID", selectedDevice.getUuid());
+        editor.putString("selectedDevice-deviceName", selectedDevice.getName());
+        editor.putString("selectedDevice-idDeviceDatabase", selectedDevice.getId());
+        editor.putString("selectedDevice-emailDevice", selectedDevice.getuserEmail());
+        editor.commit();
+    }
+
+    public Device getSelectedDevice(){
+        Device selectedDevice = new Device();
+        String uuid = myPreferences.getString("selectedDevice-UUID", "error");
+        String name = myPreferences.getString("selectedDevice-deviceName", "error");
+        String id = myPreferences.getString("selectedDevice-idDeviceDatabase", "error");
+        String email = myPreferences.getString("selectedDevice-emailDevice", "error");
+        if (uuid.equals("error") || name.equals("error") || id.equals("error") || email.equals("error"))
+            return selectedDevice;
+        else{
+            selectedDevice = new Device(uuid, name, id, email);
+            return selectedDevice;
+        }
+    }
 }
