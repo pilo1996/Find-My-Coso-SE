@@ -106,7 +106,7 @@ public class RegistraDispositivo extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         userEmail = user.getEmail();
-        databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("users");
+        databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("/users/"+user.getUid());
 
         manufacturerModel = getDeviceName();
         DeviceUuidFactory deviceUuidFactory = new DeviceUuidFactory(this);
@@ -133,7 +133,6 @@ public class RegistraDispositivo extends AppCompatActivity {
         else
             UUIDdisplay.setText(UUIDdisplay.getText().toString().concat("Errore."));
 
-
         fabRegDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,8 +155,8 @@ public class RegistraDispositivo extends AppCompatActivity {
                     if(newID == null)
                         showSnackBarCustom("Errore imprevisto.", Color.RED+"");
                     else{
-                        final Device device = new Device(UUID, deviceName, newID, userEmail);
-                        databaseReferenceDevice.child(user.getUid()).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        final Device device = new Device(UUID, deviceName, newID, userEmail, user.getUid());
+                        databaseReferenceDevice.child(newID).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
@@ -179,9 +178,9 @@ public class RegistraDispositivo extends AppCompatActivity {
 
     private boolean deviceExistsInThisAccount() {
         for (Device temp: deviceList){
-            if (temp.getuserEmail().equals(userEmail)){
+            if (temp.getOwnerID().equals(user.getUid())){
                 if (temp.getUuid().equals(UUID)){
-                    sharedpref.setThisDevice(new Device(temp.getUuid(), temp.getName(), newID, temp.getuserEmail()));
+                    sharedpref.setThisDevice(new Device(temp.getUuid(), temp.getName(), newID, temp.getuserEmail(), temp.getOwnerID()));
                     registrationStatus.setText("è");
                     return true;
                 }

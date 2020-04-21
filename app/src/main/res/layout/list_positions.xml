@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nome_della_via"
+        android:textStyle="bold"
+        android:textColor="?attr/tintcolor"
+        android:textSize="20sp"
+        android:autoSizeMaxTextSize="30sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="15sp"
+        android:paddingTop="5dp"
+        />
+
+    <TextView
+        android:id="@+id/dateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/_24_aprile_2020_alle_15_22"
+        android:textStyle="italic"
+        android:textColor="?attr/textcolor"
+        android:textSize="13sp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="10sp"/>
+
+</LinearLayout>

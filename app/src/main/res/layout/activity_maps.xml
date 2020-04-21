@@ -73,7 +73,7 @@
         app:borderWidth="0dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/choose_device"
+        android:id="@+id/historyPositions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@android:color/holo_green_dark"
@@ -85,7 +85,23 @@
         android:src="@mipmap/cronologia"
         app:borderWidth="0dp"/>
 
+    <ProgressBar
+        android:id="@+id/progressBarDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="#18b0b0"
+        android:layout_alignTop="@id/settings"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="26dp"
+        android:layout_toStartOf="@id/qr"
+        android:layout_toEndOf="@id/settings"
+        android:visibility="visible"/>
+
     <TextView
+        android:visibility="invisible"
         android:id="@+id/selectedDevice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -102,6 +118,7 @@
         android:textColor="@android:color/white"
         android:gravity="center"
         android:autoSizeTextType="uniform"
-        android:typeface="normal"/>
+        android:typeface="normal"
+        android:hapticFeedbackEnabled="true"/>
 
 </RelativeLayout>

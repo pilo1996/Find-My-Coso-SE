@@ -47,7 +47,8 @@ public class Login extends AppCompatActivity {
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            //Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            // solo API >= 29, sotto fa bloccare l'app ai permessi
     };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
@@ -264,8 +265,7 @@ public class Login extends AppCompatActivity {
     /** Called when the user has accepted (or denied) our permission request. */
     @CallSuper
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_REQUIRED_PERMISSIONS) {
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_DENIED) {

@@ -4,8 +4,10 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +33,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,7 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 1;
-    private FloatingActionButton fabSettings, fabQr, fabAddDevice;
+    private FloatingActionButton fabSettings, fabQr, fabAddDevice, fabHistory;
     private static final String[] REQUIRED_PERMISSIONS = new String[] {
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
@@ -58,15 +61,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            //Manifest.permission.ACCESS_BACKGROUND_LOCATION,
     };
     private SharedPref sharedPref;
+    private DatabaseReference databaseReferenceLocations;
     private DatabaseReference databaseReferenceDevices;
     private LatLng location;
     private List<Position> locationsList = new ArrayList<>();
+    private List<Device> devicesList = new ArrayList<>();
     private TextView deviceName;
     private String selectedDeviceName;
-    private LinearLayout linearLayout;
+    private ProgressBar progressBarDB;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //riceve dati per le posizioni del dispositivo associato all'account
+        locationsList.clear();
+        databaseReferenceLocations.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot pos : dataSnapshot.getChildren() ) {
+                    locationsList.add(pos.getValue(Position.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Errore imprevisto nel scaricare i dati delle ultime posizioni...");
+            }
+        });
+        String temp = databaseReferenceLocations.push().getKey();
+        databaseReferenceLocations.child(temp).setValue(null);
+
+        //riceve dati per i dispositivi registrati nell'account
+        devicesList.clear();
+        databaseReferenceDevices.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
+                    devicesList.add(dev.getValue(Device.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Errore imprevisto nel scaricare i dati dei dispositivi registrati...");
+            }
+        });
+        temp = databaseReferenceDevices.push().getKey();
+        databaseReferenceDevices.child(temp).setValue(null);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        if(sharedPref.getDarkModeState())
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night));
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.setBuildingsEnabled(false);
+        mMap.setMyLocationEnabled(true);
+        fetchLastLocation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addPreviousLocations();
+                deviceName.setVisibility(View.VISIBLE);
+                progressBarDB.setVisibility(View.INVISIBLE);
+            }
+        }, 3500);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,14 +148,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fabAddDevice = findViewById(R.id.addDevice);
         fabQr = findViewById(R.id.qr);
         deviceName = findViewById(R.id.selectedDevice);
+        progressBarDB = findViewById(R.id.progressBarDB);
+        fabHistory = findViewById(R.id.historyPositions);
 
-        if(sharedPref.getSelectedDevice().getId().equals("error"))
+        if(sharedPref.getSelectedDevice().getId().equals("error")){
             selectedDeviceName = sharedPref.getThisDevice().getName();
-        else
+            databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getThisDevice().getId());
+        }
+        else{
             selectedDeviceName = sharedPref.getSelectedDevice().getName();
+            databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
+        }
         deviceName.setText(selectedDeviceName);
 
-        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getThisDevice().getId());
+        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/users/"+sharedPref.getThisDevice().getOwnerID()+"/");
 
         fabSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,13 +177,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
+        fabHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PositionBottomSheetDialog bottomSheetSelector = new PositionBottomSheetDialog(locationsList, MapsActivity.this);
+                bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
+            }
+        });
 
         deviceName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent();
-                DeviceBottomSheetSelector bottomSheetSelector = new DeviceBottomSheetSelector(i);
+                DeviceBottomSheetSelector bottomSheetSelector = new DeviceBottomSheetSelector(devicesList, MapsActivity.this);
                 bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
             }
         });
@@ -144,49 +220,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         location.longitude+"",
                         String.valueOf(System.currentTimeMillis()),
                         sharedPref.getThisDevice().getId(),
-                        sharedPref.getThisDevice().getUuid()
+                        sharedPref.getThisDevice().getUuid(),
+                        sharedPref.getThisDevice().getOwnerID()
                 );
-                databaseReferenceDevices.child(position.getDayTime()).setValue(position);
+                databaseReferenceLocations.child(position.getDayTime()).setValue(position);
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        locationsList.clear();
-        databaseReferenceDevices.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
-                    locationsList.add(dev.getValue(Position.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("Errore imprevisto nel scaricare i dati delle ultime posizioni...");
-            }
-        });
-        String temp = databaseReferenceDevices.push().getKey();
-        databaseReferenceDevices.child(temp).setValue(null);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if(sharedPref.getDarkModeState())
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.mapstyle_night));
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.setBuildingsEnabled(false);
-        mMap.setMyLocationEnabled(true);
-        fetchLastLocation();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                addPreviousLocations();
-            }
-        }, 3500);
     }
 
     private void addPreviousLocations() {

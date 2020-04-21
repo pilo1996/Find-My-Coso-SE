@@ -2,6 +2,7 @@ package com.camoli.findmycoso;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -61,10 +62,11 @@ public class SharedPref {
         String name = myPreferences.getString("deviceName", "error");
         String id = myPreferences.getString("idDeviceDatabase", "error");
         String email = myPreferences.getString("emailDevice", "error");
-        if (uuid.equals("error") || name.equals("error") || id.equals("error") || email.equals("error"))
+        String owner = myPreferences.getString("ownerDevice", "error");
+        if (uuid.equals("error") || name.equals("error") || id.equals("error") || email.equals("error") || owner.equals("error"))
             return thisOne;
         else{
-            thisOne = new Device(uuid, name, id, email);
+            thisOne = new Device(uuid, name, id, email, owner);
             return thisOne;
         }
     }
@@ -75,6 +77,7 @@ public class SharedPref {
         editor.putString("deviceName", thisOne.getName());
         editor.putString("idDeviceDatabase", thisOne.getId());
         editor.putString("emailDevice", thisOne.getuserEmail());
+        editor.putString("ownerDevice", thisOne.getOwnerID());
         editor.commit();
     }
 
@@ -84,6 +87,7 @@ public class SharedPref {
         editor.putString("selectedDevice-deviceName", selectedDevice.getName());
         editor.putString("selectedDevice-idDeviceDatabase", selectedDevice.getId());
         editor.putString("selectedDevice-emailDevice", selectedDevice.getuserEmail());
+        editor.putString("selectedDevice-ownerDevice", selectedDevice.getOwnerID());
         editor.commit();
     }
 
@@ -93,11 +97,26 @@ public class SharedPref {
         String name = myPreferences.getString("selectedDevice-deviceName", "error");
         String id = myPreferences.getString("selectedDevice-idDeviceDatabase", "error");
         String email = myPreferences.getString("selectedDevice-emailDevice", "error");
-        if (uuid.equals("error") || name.equals("error") || id.equals("error") || email.equals("error"))
+        String owner = myPreferences.getString("selectedDevice-ownerDevice", "error");
+        if (uuid.equals("error") || name.equals("error") || id.equals("error") || email.equals("error") || owner.equals("error"))
             return selectedDevice;
         else{
-            selectedDevice = new Device(uuid, name, id, email);
+            selectedDevice = new Device(uuid, name, id, email, owner);
             return selectedDevice;
         }
+    }
+
+    public void setLayoutIDSelectedDevice(int layoutID){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putInt("layoutSelectedDevice", layoutID);
+        editor.commit();
+    }
+
+    public void setLayoutSelectedDevice(LinearLayout layout){
+        setLayoutIDSelectedDevice(layout.getId());
+    }
+
+    public int getLayoutIDSelectedDevice(){
+        return myPreferences.getInt("layoutSelectedDevice", -1);
     }
 }

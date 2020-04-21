@@ -1,25 +1,42 @@
 package com.camoli.findmycoso;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.List;
+
 
 public class DeviceBottomSheetSelector extends BottomSheetDialogFragment {
 
-    private SharedPref sharedPref;
     private Intent i;
+    private ListView listViewDevices;
+    private List<Device> deviceList;
+    private DeviceList devices;
+    private Activity c;
+    private List<RadioButton> radioButtons;
+    private SharedPref sharedPref;
 
-    public DeviceBottomSheetSelector(Intent i) {
+    public DeviceBottomSheetSelector(List<Device> deviceList, Activity c) {
             this.i = i;
+            this.deviceList = deviceList;
+            this.c = c;
+            sharedPref = new SharedPref(c.getApplicationContext());
     }
 
     @Nullable
@@ -27,14 +44,10 @@ public class DeviceBottomSheetSelector extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.select_device_sheet_dialogue, container,false);
+        devices = new DeviceList(c, R.layout.select_device_sheet_dialogue, deviceList);
+        listViewDevices = v.findViewById(R.id.listViewDevices);
+        listViewDevices.setAdapter(devices);
 
-        TextView temp = v.findViewById(R.id.deviceName);
-
-        sharedPref = new SharedPref(getActivity().getApplicationContext());
-
-        temp.setText(sharedPref.getThisDevice().getName());
-        temp = v.findViewById(R.id.deviceInfo);
-        temp.setText(sharedPref.getThisDevice().getId());
         return v;
     }
 }

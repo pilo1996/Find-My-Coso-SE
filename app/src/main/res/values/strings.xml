@@ -94,4 +94,12 @@
     <string name="id_dispositivo">Id dispositivo</string>
     <string name="sei_il_proprietario_di_questo_dispositivo">Sei il proprietario di questo dispositivo.</string>
     <string name="blank" />
+    <string name="dispositivo_aggiunto_da_qr">Dispositivo aggiunto da QR</string>
+    <string name="cronologia_posizioni">Cronologia posizioni</string>
+    <string name="ok">OK</string>
+    <string name="cancella_tutto">Cancella tutto</string>
+    <string name="chiudi_cronologia">Chiudi cronologia</string>
+    <string name="nome_della_via">Nome della via</string>
+    <string name="_24_aprile_2020_alle_15_22">24 Aprile 2020 alle 15:22</string>
+    <string name="chiudi">Chiudi</string>
 </resources>

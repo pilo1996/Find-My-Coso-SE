@@ -11,82 +11,83 @@
     app:behavior_peekHeight="0dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <ListView
+        android:id="@+id/listViewDevices"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/thisDevice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <RadioButton
+            android:id="@+id/radioButton_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hapticFeedbackEnabled="true"
+            android:buttonTint="?attr/textcolor"
+            android:clickable="false"/>
+
+        <ImageView
+            android:id="@+id/iconDevice"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_phone"
+            android:tint="?attr/textcolor"/>
 
         <LinearLayout
-            android:id="@+id/thisDevice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
+            android:orientation="vertical"
+            android:padding="5dp">
 
-            <RadioButton
-                android:id="@+id/radioButton_selected"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hapticFeedbackEnabled="true"
-                android:buttonTint="?attr/textcolor"/>
-
-            <ImageView
-                android:id="@+id/iconDevice"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_phone"
-                android:tint="?attr/textcolor"/>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/deviceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/nome_dispositivo"
+                android:textColor="?attr/tintcolor"
+                android:textStyle="bold"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMaxTextSize="25sp"
+                android:autoSizeMinTextSize="17sp"/>
 
-                <TextView
-                    android:id="@+id/deviceName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/nome_dispositivo"
-                    android:textColor="?attr/tintcolor"
-                    android:textStyle="bold"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="17sp"/>
+            <TextView
+                android:id="@+id/deviceInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/id_dispositivo"
+                android:textColor="?attr/textcolor"
+                android:textSize="15sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMaxTextSize="15dp"
+                />
 
-                <TextView
-                    android:id="@+id/deviceInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/id_dispositivo"
-                    android:textColor="?attr/textcolor"
-                    android:textSize="15sp"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMaxTextSize="15dp"
-                    />
-
-                <TextView
-                    android:id="@+id/isYourDevice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_green_light"
-                    android:textStyle="italic"
-                    android:text="@string/sei_il_proprietario_di_questo_dispositivo"
-                    android:textSize="15sp"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMaxTextSize="15dp"
-                    />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/isYourDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_green_light"
+                android:textStyle="italic"
+                android:text="@string/sei_il_proprietario_di_questo_dispositivo"
+                android:textSize="15sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMaxTextSize="15dp"
+                />
 
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>
