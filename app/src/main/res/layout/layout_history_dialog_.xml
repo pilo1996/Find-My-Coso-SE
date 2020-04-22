@@ -26,19 +26,21 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPositions"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/historyLabel"
-        android:padding="20dp">
+        android:layout_marginBottom="8dp">
     </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
+        android:id="@+id/pulsanti"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_below="@+id/recyclerViewPositions">
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/recyclerViewPositions"
+        android:orientation="horizontal">
 
         <LinearLayout
         android:id="@+id/deleteAll"
@@ -116,6 +118,7 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="17sp"
                 android:textStyle="bold"
+                android:paddingEnd="15dp"
                 android:layout_gravity="center_vertical"/>
 
         </LinearLayout>

@@ -8,11 +8,6 @@
     tools:context=".RegistraDispositivo"
     android:background="?attr/backgroundcolor">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinatorSnackbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"/>
 
     <TextView
         android:id="@+id/info1"
@@ -106,21 +101,6 @@
         android:textSize="18sp"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/regDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="26dp"
-        android:layout_marginEnd="26dp"
-        android:hapticFeedbackEnabled="true"
-        android:backgroundTint="@color/btn_bg"
-        android:src="@mipmap/white_plus"
-        app:borderWidth="0dp"
-        android:visibility="invisible"
-        />
-
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -129,6 +109,31 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:visibility="visible"/>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorSnackbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/uuidLabel">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/regDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="26dp"
+            android:layout_marginBottom="26dp"
+            android:backgroundTint="@color/btn_bg"
+            android:hapticFeedbackEnabled="true"
+            android:src="@mipmap/white_plus"
+            android:visibility="invisible"
+            app:borderWidth="0dp" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
 
 
 </RelativeLayout>

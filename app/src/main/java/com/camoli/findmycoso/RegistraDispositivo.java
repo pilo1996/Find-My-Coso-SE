@@ -56,6 +56,7 @@ public class RegistraDispositivo extends AppCompatActivity {
     private ProgressBar waitingProgress;
     private FirebaseUser user;
     private String newID;
+    private String deviceName;
 
     @Override
     protected void onStart() {
@@ -133,11 +134,13 @@ public class RegistraDispositivo extends AppCompatActivity {
         else
             UUIDdisplay.setText(UUIDdisplay.getText().toString().concat("Errore."));
 
+
+        deviceName = nameDeviceLayout.getEditText().getText().toString().trim();
+
         fabRegDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 waitingProgress.setVisibility(View.VISIBLE);
-                String deviceName = nameDeviceLayout.getEditText().getText().toString().trim();
                 if(deviceName.equals("")){
                     nameDeviceLayout.setErrorEnabled(true);
                     nameDeviceLayout.setError("Il nome non può essere vuoto.");
@@ -146,8 +149,14 @@ public class RegistraDispositivo extends AppCompatActivity {
                     nameDeviceLayout.setErrorEnabled(false);
 
                 if(deviceExistsInThisAccount()) {
-                    registrationStatus.setText("è");
-                    showSnackBarCustom("Dispositivo già registrato.", "#ffa500");
+                    if(isSameUUID()){
+                        registrationStatus.setText("è");
+                        showSnackBarCustom("Dispositivo già registrato.", "#ffa500");
+                    }
+                    else {
+                        registrationStatus.setText("è");
+                        showSnackBarCustom("Dispositivo già registrato, tuttavia potrebbe non essere lo stesso. Cambiare il nome se si vuole registrarlo.", "#ffa500");
+                    }
                 }
                 else {
                     DatabaseReference temp = databaseReferenceDevice.push();
@@ -176,14 +185,23 @@ public class RegistraDispositivo extends AppCompatActivity {
         });
     }
 
+    private boolean isSameUUID() {
+        for (Device temp: deviceList){
+            if (temp.getUuid().equals(UUID)){
+                sharedpref.setThisDevice(temp);
+                registrationStatus.setText("è");
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean deviceExistsInThisAccount() {
         for (Device temp: deviceList){
-            if (temp.getOwnerID().equals(user.getUid())){
-                if (temp.getUuid().equals(UUID)){
-                    sharedpref.setThisDevice(new Device(temp.getUuid(), temp.getName(), newID, temp.getuserEmail(), temp.getOwnerID()));
-                    registrationStatus.setText("è");
-                    return true;
-                }
+            if (temp.getName().equals(deviceName)){
+                sharedpref.setThisDevice(temp);
+                registrationStatus.setText("è");
+                return true;
             }
         }
         return false;

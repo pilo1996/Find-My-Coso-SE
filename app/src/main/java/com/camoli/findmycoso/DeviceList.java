@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -40,30 +42,41 @@ public class DeviceList extends ArrayAdapter<Device> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         final View listViewPositions = inflater.inflate(resource, null, true);
 
         final Device device = devices.get(position);
 
         final LinearLayout thisDevice = listViewPositions.findViewById(R.id.thisDevice);
-        thisDevice.setVisibility(View.VISIBLE);
+        final LinearLayout thisEntireDevice = listViewPositions.findViewById(R.id.thisDeviceEntire);
+        thisEntireDevice.setVisibility(View.VISIBLE);
+
+        final ImageButton deleteSingleDevice = listViewPositions.findViewById(R.id.delete_single_device);
 
         final RadioButton radioButton = listViewPositions.findViewById(R.id.radioButton_selected);
         if(sharedPref.getSelectedDevice().getId().equals(device.getId())){
             radioButton.setChecked(true);
         }
 
-
         TextView textView = listViewPositions.findViewById(R.id.deviceName);
         textView.setText(device.getName());
         textView = listViewPositions.findViewById(R.id.deviceInfo);
         textView.setText(device.getId());
 
-        if(!sharedPref.getThisDevice().getOwnerID().equals(device.getOwnerID())){
+        if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(device.getOwnerID())){
             textView = listViewPositions.findViewById(R.id.isYourDevice);
             textView.setText(R.string.dispositivo_aggiunto_da_qr);
         }
+
+        deleteSingleDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference item = FirebaseDatabase.getInstance().getReference("/devices/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                item.child(device.getId()).setValue(null);
+                devices.remove(position);
+            }
+        });
 
         thisDevice.setOnClickListener(new View.OnClickListener() {
             @Override

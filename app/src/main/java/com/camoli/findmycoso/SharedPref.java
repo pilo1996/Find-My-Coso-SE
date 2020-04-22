@@ -106,17 +106,4 @@ public class SharedPref {
         }
     }
 
-    public void setLayoutIDSelectedDevice(int layoutID){
-        SharedPreferences.Editor editor = myPreferences.edit();
-        editor.putInt("layoutSelectedDevice", layoutID);
-        editor.commit();
-    }
-
-    public void setLayoutSelectedDevice(LinearLayout layout){
-        setLayoutIDSelectedDevice(layout.getId());
-    }
-
-    public int getLayoutIDSelectedDevice(){
-        return myPreferences.getInt("layoutSelectedDevice", -1);
-    }
 }

@@ -102,4 +102,6 @@
     <string name="nome_della_via">Nome della via</string>
     <string name="_24_aprile_2020_alle_15_22">24 Aprile 2020 alle 15:22</string>
     <string name="chiudi">Chiudi</string>
+    <string name="registra_il_dispositivo">Registra il dispositivo.</string>
+    <string name="posizione_cancellata">Posizione cancellata.</string>
 </resources>

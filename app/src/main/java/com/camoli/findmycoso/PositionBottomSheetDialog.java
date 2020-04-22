@@ -24,14 +24,14 @@ import java.util.List;
 public class PositionBottomSheetDialog extends BottomSheetDialogFragment {
 
 
+    private List<Position> positionList;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    private List<Position> positionList;
     private Activity c;
     private LinearLayout deleteAll, close;
     private SharedPref sharedPref;
 
-    public PositionBottomSheetDialog(List<Position> positionList, Activity c) {
+    public PositionBottomSheetDialog(Activity c, List<Position> positionList) {
             this.positionList = positionList;
             this.c = c;
             sharedPref = new SharedPref(c.getApplicationContext());

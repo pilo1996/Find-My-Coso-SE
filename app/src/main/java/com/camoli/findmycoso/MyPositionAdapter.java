@@ -1,15 +1,25 @@
 package com.camoli.findmycoso;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.Date;
@@ -30,11 +40,15 @@ public class MyPositionAdapter extends RecyclerView.Adapter<MyPositionAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private TextView via, dayTime;
+        private ImageButton imgSingleDelete;
+        private LinearLayout goToMaps;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             via = itemView.findViewById(R.id.street);
             dayTime = itemView.findViewById(R.id.dateTime);
+            imgSingleDelete = itemView.findViewById(R.id.img_single_delete);
+            goToMaps = itemView.findViewById(R.id.position_i);
         }
     }
 
@@ -46,30 +60,33 @@ public class MyPositionAdapter extends RecyclerView.Adapter<MyPositionAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyPositionAdapter.ViewHolder holder, int position) {
-        Position temp = positionList.get(position);
+    public void onBindViewHolder(@NonNull final MyPositionAdapter.ViewHolder holder, final int position) {
+        if(position < positionList.size()){
+            final Position temp = positionList.get(position);
 
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            holder.via.setText(temp.getAddress());
+            holder.dayTime.setText(temp.getDateTime());
+            holder.imgSingleDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference item = FirebaseDatabase.getInstance().getReference("/locations/"+temp.getId());
+                    item.child(temp.getDayTime()).setValue(null);
+                    positionList.remove(position);
+                    notifyItemRemoved(position);
+                }
+            });
 
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocation(Double.parseDouble(temp.getLatitude()), Double.parseDouble(temp.getLongitude()), 1);
-        } catch (IOException e) {
-            e.printStackTrace();
+            holder.goToMaps.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+Double.parseDouble(temp.getLatitude())+","+Double.parseDouble(temp.getLongitude())+"?q="+Uri.encode(temp.getAddress()))).setPackage("com.google.android.apps.maps");
+                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(mapIntent);
+                    }
+                }
+            });
         }
 
-        String indirizzoCompleto;
-
-        if(addresses != null && addresses.size() > 0)
-            indirizzoCompleto = addresses.get(0).getAddressLine(0);
-        else
-            indirizzoCompleto = temp.getLatitude()+", "+temp.getLongitude();
-
-        Date data = new Date();
-        data.setTime(Long.parseLong(temp.getDayTime()));
-
-        holder.via.setText(indirizzoCompleto);
-        holder.dayTime.setText(data.toString());
     }
 
     @Override

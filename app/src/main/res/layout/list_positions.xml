@@ -2,32 +2,59 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/street"
+    <LinearLayout
+        android:id="@+id/itemLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nome_della_via"
-        android:textStyle="bold"
-        android:textColor="?attr/tintcolor"
-        android:textSize="20sp"
-        android:autoSizeMaxTextSize="30sp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="15sp"
-        android:paddingTop="5dp"
-        />
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
-    <TextView
-        android:id="@+id/dateTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/_24_aprile_2020_alle_15_22"
-        android:textStyle="italic"
-        android:textColor="?attr/textcolor"
-        android:textSize="13sp"
-        android:autoSizeMaxTextSize="20sp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="10sp"/>
+        <ImageButton
+            android:id="@+id/img_single_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_single"
+            android:tint="@color/colorAccent"
+            android:padding="15dp"
+            android:paddingEnd="30dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"/>
+
+        <LinearLayout
+            android:id="@+id/position_i"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/street"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoSizeMaxTextSize="30sp"
+                android:autoSizeMinTextSize="15sp"
+                android:autoSizeTextType="uniform"
+                android:text="@string/nome_della_via"
+                android:textColor="?attr/tintcolor"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeTextType="uniform"
+                android:text="@string/_24_aprile_2020_alle_15_22"
+                android:textColor="?attr/textcolor"
+                android:textSize="13sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
