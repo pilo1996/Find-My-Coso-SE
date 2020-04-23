@@ -3,6 +3,7 @@ package com.camoli.findmycoso;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
@@ -19,6 +20,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +53,19 @@ public class SplashScreenActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_splash_screen);
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED){
+            if(!isNetworkAvailable()){
+                Toast.makeText(this, "Nessuna connessione ad internet!", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        else{
+            Toast.makeText(this, "Sono richiesti permessi necessari.", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, 0);
+            finish();
+            startActivity(new Intent(this, SplashScreenActivity.class));
+        }
 
         sharedpref = new SharedPref(this);
         mAuth = FirebaseAuth.getInstance();
@@ -91,6 +107,13 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
             }
         }, SPLASH_TIME_OUT);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public static void startAnimation(final Activity activity) {

@@ -47,6 +47,10 @@ public class DeviceList extends ArrayAdapter<Device> {
         final View listViewPositions = inflater.inflate(resource, null, true);
 
         final Device device = devices.get(position);
+        System.out.println("Arriva a DeviceList");
+
+        if(device.getId().equals("error"))
+            return listViewPositions;
 
         final LinearLayout thisDevice = listViewPositions.findViewById(R.id.thisDevice);
         final LinearLayout thisEntireDevice = listViewPositions.findViewById(R.id.thisDeviceEntire);
@@ -72,7 +76,7 @@ public class DeviceList extends ArrayAdapter<Device> {
         deleteSingleDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference item = FirebaseDatabase.getInstance().getReference("/devices/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                DatabaseReference item = FirebaseDatabase.getInstance().getReference("/devices/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/favorites/");
                 item.child(device.getId()).setValue(null);
                 devices.remove(position);
             }

@@ -104,4 +104,16 @@
     <string name="chiudi">Chiudi</string>
     <string name="registra_il_dispositivo">Registra il dispositivo.</string>
     <string name="posizione_cancellata">Posizione cancellata.</string>
+    <string name="qr">QR</string>
+    <string name="qr_explanation">Il tuo dispositivo è identificato da questo codice QR univoco. \n\n Condividi la posizione di questo dispositivo con conoscenti utilizzando questo codice.</string>
+    <string name="scannerizza_qr">Scannerizza QR</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="qr_code_del_dispositivo_corrente">QR code del dispositivo corrente.</string>
+    <string name="autofocus">Autofocus</string>
+    <string name="email_proprietario">Email proprietario</string>
+    <string name="qr_code_device_to_add">Qr code device to add</string>
+    <string name="aggiungi_dispositivo_ai_preferiti">Aggiungi dispositivo ai preferiti</string>
+    <string name="aggiungi_ai_preferiti">Aggiungi ai preferiti</string>
+    <string name="gia_salvato">Già salvato.</string>
+    <string name="salvato">Salvato</string>
 </resources>

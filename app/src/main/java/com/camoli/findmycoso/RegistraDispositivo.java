@@ -121,7 +121,7 @@ public class RegistraDispositivo extends AppCompatActivity {
                 deviceExistsInThisAccount();
                 waitingProgress.setVisibility(View.INVISIBLE);
             }
-        }, 5000);
+        }, 500);
 
         if(manufacturerModel != null){
             nameDeviceLayout.getEditText().setText(manufacturerModel);

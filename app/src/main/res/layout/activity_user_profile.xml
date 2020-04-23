@@ -7,47 +7,41 @@
     android:orientation="vertical"
     tools:context=".UserProfile"
     android:background="@drawable/background_login"
-    >
+    android:layout_gravity="center">
 
     <TextView
         android:id="@+id/hint_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:layout_above="@id/userPic"
         android:textColor="@android:color/white"
         android:textStyle="italic"
         android:text="@string/clicca_sull_immagine_sottostante_per_selezionare_una_foto_profilo"
         android:textAlignment="center"
         android:textSize="16sp"/>
 
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/userPic"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:layout_above="@id/name_input_layout"
+        android:contentDescription="@string/clicca_sull_immagine_sottostante_per_selezionare_una_foto_profilo"
+        android:src="@mipmap/camera_icon"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="20dp"
+        android:layout_marginBottom="10dp"/>
+
     <ProgressBar
         android:id="@+id/imgProgress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"
-        android:layout_below="@+id/userPic"
-        android:layout_marginTop="5dp"
-        />
-
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/userPic"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        android:layout_below="@+id/hint_photo"
-        android:layout_above="@+id/name_input_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:contentDescription="@string/clicca_sull_immagine_sottostante_per_selezionare_una_foto_profilo"
-        android:src="@mipmap/camera_icon"
-        android:scaleType="centerCrop"
-        app:riv_corner_radius="30dp"
-        />
+        android:visibility="visible"
+        android:layout_alignTop="@+id/userPic"
+        android:layout_alignBottom="@+id/userPic"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name_input_layout"
@@ -56,7 +50,6 @@
         android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="60dp"
@@ -73,15 +66,30 @@
             android:textColor="@android:color/white"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <Button
-        android:id="@+id/saveButton"
+    <ProgressBar
+        android:id="@+id/save_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:indeterminateTint="#18b0b0"
+        android:layout_alignTop="@id/saveButton"
+        android:layout_alignBottom="@id/saveButton"
+        android:visibility="invisible"
+        android:focusable="auto"/>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/userPic"
+        android:layout_alignEnd="@id/userPic"
         android:layout_below="@+id/name_input_layout"
+        android:layout_centerInParent="true"
         android:background="@drawable/rounded_button"
         android:text="@string/salva"
+        android:autoSizeTextType="uniform"
+        android:padding="8dp"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:hapticFeedbackEnabled="true"
@@ -89,26 +97,20 @@
 
     <Button
         android:id="@+id/goHome"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_alignStart="@id/saveButton"
+        android:layout_alignEnd="@id/saveButton"
         android:layout_marginTop="50dp"
         android:layout_below="@+id/saveButton"
+        android:layout_centerInParent="true"
         android:background="@drawable/rounded_button_alt"
         android:text="@string/vai_a_home"
-        android:ems="10"
+        android:autoSizeTextType="uniform"
+        android:padding="12dp"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:hapticFeedbackEnabled="true"
         android:layout_marginBottom="45dp"/>
-
-    <ProgressBar
-        android:id="@+id/save_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignBottom="@+id/saveButton"
-        android:visibility="invisible"/>
-
 
 </RelativeLayout>

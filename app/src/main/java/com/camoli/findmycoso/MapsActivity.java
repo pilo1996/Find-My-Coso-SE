@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Queue;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -66,10 +67,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION, //solo per api>=29
     };
-    private static final String[] REQUIRED_PERMISSIONS_OLD = new String[] {
+    private static final String[] REQUIRED_PERMISSIONS_OLD = new String[] { //api <= 28
             Manifest.permission.BLUETOOTH,
+            Manifest.permission.CAMERA,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.CHANGE_WIFI_STATE,
@@ -78,6 +83,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
     };
     private SharedPref sharedPref;
     private DatabaseReference databaseReferenceLocations;
@@ -88,6 +95,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView deviceName;
     private String selectedDeviceName;
     private ProgressBar progressBarDB;
+    private List<Device> deviceFavoritesList = new ArrayList<>();
+    private DatabaseReference databaseReferenceFavoriteDevices;
 
     private void stampaDevice(Device device){
         System.out.println("Device ID: "+device.getId());
@@ -106,9 +115,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void retriveDevices(){
         String temp;
-
         //riceve dati per i dispositivi registrati nell'account
-        databaseReferenceDevices.addValueEventListener(new ValueEventListener() {
+        databaseReferenceDevices.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 devicesList.clear();
@@ -124,6 +132,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         temp = databaseReferenceDevices.push().getKey();
         databaseReferenceDevices.child(temp).setValue(null);
+
+        databaseReferenceFavoriteDevices = FirebaseDatabase.getInstance().getReference("/users/"+
+                FirebaseAuth.getInstance().getCurrentUser().getUid()+"/favorites/");
+        databaseReferenceFavoriteDevices.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                deviceFavoritesList.clear();
+                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
+                    System.out.println(dev.getValue().toString());
+                    deviceFavoritesList.add(dev.getValue(Device.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        temp = databaseReferenceFavoriteDevices.push().getKey();
+        databaseReferenceFavoriteDevices.child(temp).setValue(null);
     }
 
     private void retriveLocations(){
@@ -178,11 +206,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 deviceName.setVisibility(View.VISIBLE);
                 progressBarDB.setVisibility(View.INVISIBLE);
             }
-        }, 3500);
+        }, 600);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         sharedPref = new SharedPref(this);
 
         if(sharedPref.getDarkModeState())
@@ -199,28 +228,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         progressBarDB = findViewById(R.id.progressBarDB);
         fabHistory = findViewById(R.id.historyPositions);
 
-        if(FirebaseAuth.getInstance() == null){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
             startActivity(new Intent(this, Login.class));
             finish();
         }
 
+        /*
         System.out.println("******** ON CREATE inizio ***********");
         System.out.println("Selected Device:\n");
         stampaDevice(sharedPref.getSelectedDevice());
         System.out.println("\nThis Device: \n");
         stampaDevice(sharedPref.getThisDevice());
+        */
 
         databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         if(!findThisDevice())
             deviceName.setText(R.string.registra_il_dispositivo);
-
+        /*
         System.out.println("******** ON CREATE post thisDevice***********");
         System.out.println("Selected Device:\n");
         stampaDevice(sharedPref.getSelectedDevice());
         System.out.println("\nThis Device: \n");
         stampaDevice(sharedPref.getThisDevice());
-
+        */
         if(!deviceName.getText().equals(R.string.registra_il_dispositivo)){
             if(sharedPref.getSelectedDevice().getId().equals("error")){
                 sharedPref.setSelectedDevice(sharedPref.getThisDevice());
@@ -229,13 +260,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
             deviceName.setText(selectedDeviceName);
         }
-
+        /*
         System.out.println("******** ON Create post selectedDevice ***********");
         System.out.println("Selected Device:\n");
         stampaDevice(sharedPref.getSelectedDevice());
         System.out.println("\nThis Device: \n");
         stampaDevice(sharedPref.getThisDevice());
-
+        */
         fabSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,6 +288,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
+                   // retriveLocations();
                     PositionBottomSheetDialog bottomSheetSelector = new PositionBottomSheetDialog(MapsActivity.this, locationsList);
                     bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
                 }
@@ -270,9 +302,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
+                    devicesList.addAll(deviceFavoritesList);
                     DeviceBottomSheetSelector bottomSheetSelector = new DeviceBottomSheetSelector(devicesList, MapsActivity.this);
                     bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
                 }
+            }
+        });
+
+        fabQr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), QRCodeActivity.class));
             }
         });
 
@@ -284,6 +324,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private boolean findThisDevice() {
+        System.out.println("entra in find this device, ritorna: "+sharedPref.getThisDevice().getId().equals("error"));
         if(sharedPref.getThisDevice().getId().equals("error")){
             for (Device d : devicesList){
                 if(getDeviceName().equals(d.getName())){
@@ -343,9 +384,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Task<Location> task = fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                if(task.isSuccessful()){
+                if(task.isSuccessful() && task.getResult() != null){
                     location = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
 
                     String timestamp = String.valueOf(System.currentTimeMillis());
                     //save location in the real-time database
@@ -384,10 +425,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected String[] getRequiredPermissions() {
-        //if (Build.VERSION.SDK_INT >= 29)
+        if (Build.VERSION.SDK_INT >= 29)
             return REQUIRED_PERMISSIONS;
-        //else
-        //    return REQUIRED_PERMISSIONS_OLD;
+        else
+            return REQUIRED_PERMISSIONS_OLD;
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -400,16 +441,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-    /** Called when the user has accepted (or denied) our permission request. */
     @CallSuper
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE) {
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(this, "Mancano permessi!", Toast.LENGTH_LONG).show();
-                    finish();
                     return;
                 }
             }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QRCodeActivity"
+    android:background="?attr/backgroundcolor">
+
+    <Toolbar
+        android:id="@+id/qrToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="visible"
+        android:title="@string/qr"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white">
+    </Toolbar>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/qrToolbar"
+        android:layout_above="@id/thisDeviceQRCode"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="30dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeMinTextSize="15sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:padding="20sp"
+        android:text="@string/qr_explanation" />
+
+    <ImageView
+        android:id="@+id/thisDeviceQRCode"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/qr_code_del_dispositivo_corrente" />
+
+    <Button
+        android:id="@+id/scanQR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/thisDeviceQRCode"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_button_alt"
+        android:textColor="@android:color/white"
+        android:text="@string/scan_qr_code"
+        android:padding="10dp"
+        android:autoSizeTextType="uniform"
+        android:layout_alignStart="@id/thisDeviceQRCode"
+        android:layout_alignEnd="@id/thisDeviceQRCode"
+        android:layout_marginTop="50dp"
+        />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorSnackbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

@@ -37,7 +37,24 @@ public class Impostazioni extends AppCompatActivity {
             Manifest.permission.INTERNET,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION, //solo per api>=29
+            Manifest.permission.CAMERA,
+    };
+    private static final String[] REQUIRED_PERMISSIONS_OLD = new String[] { //api <= 28
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.INTERNET,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CAMERA,
     };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
@@ -116,7 +133,10 @@ public class Impostazioni extends AppCompatActivity {
     }
 
     protected String[] getRequiredPermissions() {
-        return REQUIRED_PERMISSIONS;
+        if (Build.VERSION.SDK_INT >= 29)
+            return REQUIRED_PERMISSIONS;
+        else
+            return REQUIRED_PERMISSIONS_OLD;
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -137,7 +157,6 @@ public class Impostazioni extends AppCompatActivity {
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(this, "Mancano permessi!", Toast.LENGTH_LONG).show();
-                    finish();
                     return;
                 }
             }

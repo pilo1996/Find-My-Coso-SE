@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -78,8 +81,10 @@ public class UserProfile extends AppCompatActivity {
             else{
                 nome_layout.getEditText().setText(mAuth.getCurrentUser().getDisplayName());
             }
-            if(user.getPhotoUrl() != null)
+            if(user.getPhotoUrl() != null){
+                imgProgressBar.setVisibility(View.INVISIBLE);
                 Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString()).into(userPic);
+            }
         }
         else{
             startActivity(new Intent(getApplicationContext(), Login.class));
@@ -218,6 +223,7 @@ public class UserProfile extends AppCompatActivity {
             localProfileImg = data.getData().toString();
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
                 userPic.setImageBitmap(bitmap);
                 uploadToFirebaseStorage();
             } catch (IOException e) {

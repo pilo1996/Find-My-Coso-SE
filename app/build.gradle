@@ -3,7 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.camoli.findmycoso"
         minSdkVersion 28
@@ -47,4 +47,8 @@ dependencies {
     implementation 'com.karumi:dexter:6.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
+    implementation 'com.google.zxing:core:3.3.3'
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'com.google.android.libraries.places:places:2.2.0'
 }
