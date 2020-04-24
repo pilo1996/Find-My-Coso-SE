@@ -3,138 +3,153 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Impostazioni"
     android:orientation="vertical"
-    android:padding="24dp"
     android:background="?attr/backgroundcolor">
 
-    <androidx.cardview.widget.CardView
-        android:layout_height="wrap_content"
+    <Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:backgroundTint="?attr/boxbackground">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/permessi"
-                android:textColor="?attr/textcolor"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_marginTop="5dp"
-                android:textColor="?attr/textcolor"
-                android:text="@string/per_poter_utilizzare_l_applicazione_necessario_il_consenso_dei_permessi_nclicca_sul_pulsante_ottieni_permessi_per_richiederli"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
-
-            <Button
-                android:id="@+id/get_permissions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="?attr/buttoncolor"
-                android:text="@string/ottieni_permessi"
-                android:textColor="#FFFFFF" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:backgroundTint="?attr/boxbackground">
-        <LinearLayout
+        android:background="?attr/colorPrimary"
+        android:title="@string/impostazioni"
+        android:elevation="5dp"
+        android:titleTextColor="@android:color/white"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        tools:context=".Impostazioni">
+
+        <androidx.cardview.widget.CardView
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dark_mode"
-                android:textColor="?attr/textcolor"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_marginTop="5dp"
-                android:textColor="?attr/textcolor"
-                android:text="@string/puoi_abilitare_o_disabiitare_la_dark_mode_ndi_default_vengono_applicate_le_impostazioni_del_dispositivo"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
-
-            <Switch
-                android:id="@+id/switchDarkMode"
+            android:backgroundTint="?attr/boxbackground">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/dark_mode"
-                android:textColor="?attr/textcolor"/>
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:orientation="vertical">
 
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:backgroundTint="?attr/boxbackground"
-        android:layout_marginTop="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/account"
-                android:textColor="?attr/textcolor"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/account_explanation_text"
-                android:layout_marginTop="5dp"
-                android:textColor="?attr/textcolor"
-                android:text="@string/account_explanation"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/logOut"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/btn_bg"
-                    android:text="@string/logout"
-                    android:textColor="#FFFFFF"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    tools:ignore="RelativeOverlap" />
+                    android:text="@string/permessi"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:textColor="?attr/textcolor"
+                    android:text="@string/per_poter_utilizzare_l_applicazione_necessario_il_consenso_dei_permessi_nclicca_sul_pulsante_ottieni_permessi_per_richiederli"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
 
                 <Button
-                    android:id="@+id/update_profile"
+                    android:id="@+id/get_permissions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="?attr/buttoncolor"
-                    android:text="@string/aggiorna_profilo"
-                    android:textColor="#FFFFFF"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"/>
+                    android:text="@string/ottieni_permessi"
+                    android:textColor="#FFFFFF" />
 
-            </RelativeLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:backgroundTint="?attr/boxbackground">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dark_mode"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:textColor="?attr/textcolor"
+                    android:text="@string/puoi_abilitare_o_disabiitare_la_dark_mode_ndi_default_vengono_applicate_le_impostazioni_del_dispositivo"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+
+                <Switch
+                    android:id="@+id/switchDarkMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dark_mode"
+                    android:textColor="?attr/textcolor"/>
 
 
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:backgroundTint="?attr/boxbackground"
+            android:layout_marginTop="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/account_explanation_text"
+                    android:layout_marginTop="5dp"
+                    android:textColor="?attr/textcolor"
+                    android:text="@string/account_explanation"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/logOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/btn_bg"
+                        android:text="@string/logout"
+                        android:textColor="#FFFFFF"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        tools:ignore="RelativeOverlap" />
+
+                    <Button
+                        android:id="@+id/update_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="?attr/buttoncolor"
+                        android:text="@string/aggiorna_profilo"
+                        android:textColor="#FFFFFF"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"/>
+
+                </RelativeLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
 </LinearLayout>
 

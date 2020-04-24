@@ -3,32 +3,31 @@ package com.camoli.findmycoso;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.os.Handler;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,12 +48,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.Queue;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -103,11 +101,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Device> deviceFavoritesList = new ArrayList<>();
     private DatabaseReference databaseReferenceFavoriteDevices;
     private DeviceBottomSheetSelector bottomSheetSelector;
+    private Toolbar toolbar;
 
     private void stampaDevice(Device device){
         System.out.println("Device ID: "+device.getId());
         System.out.println("Device Name: "+device.getName());
         System.out.println("Device Owner: "+device.getOwnerID());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.mappa:
+                startActivity(new Intent(this, MapsActivity.class));
+                finish();
+                break;
+            case R.id.settings:
+                startActivity(new Intent(this, Impostazioni.class));
+                finish();
+                break;
+            case R.id.registerDevice:
+                startActivity(new Intent(this, RegistraDispositivo.class));
+                finish();
+                break;
+            case R.id.qrCode:
+                startActivity(new Intent(this, QRCodeActivity.class));
+                break;
+            case R.id.account:
+                startActivity(new Intent(this, UserProfile.class));
+                break;
+            case R.id.helpInfo:
+                startActivity(new Intent(this, HelpInfo.class));
+                break;
+            case R.id.esci:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), Login.class));
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        menu.getItem(0).setVisible(false);
+
+        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+            try{
+                Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            }
+            catch(NoSuchMethodException e){
+                Log.e("Menù bitch", "onMenuOpened", e);
+            }
+            catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -208,11 +263,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
                     deviceName.setText(selectedDeviceName);
                 }
-
+                LottieAnimationView lottieAnimationView = findViewById(R.id.geo_loading);
+                lottieAnimationView.cancelAnimation();
+                lottieAnimationView.setVisibility(View.GONE);
                 deviceName.setVisibility(View.VISIBLE);
                 progressBarDB.setVisibility(View.INVISIBLE);
             }
-        }, 600);
+        }, 2000);
+
     }
 
     @Override
@@ -227,6 +285,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
         fabSettings = findViewById(R.id.settings);
         fabAddDevice = findViewById(R.id.addDevice);
         fabQr = findViewById(R.id.qr);
@@ -392,30 +452,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-        Task<Location> task = fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if(task.isSuccessful() && task.getResult() != null){
-                    location = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+        //if(sharedPref.getSelectedDevice().getId().equals(sharedPref.getThisDevice().getId())){
+            Task<Location> task = fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if(task.isSuccessful() && task.getResult() != null){
+                        location = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
 
-                    String timestamp = String.valueOf(System.currentTimeMillis());
-                    //save location in the real-time database
-                    final Position position = new Position(
-                            location.latitude+"",
-                            location.longitude+"",
-                            timestamp,
-                            sharedPref.getThisDevice().getId(),
-                            sharedPref.getThisDevice().getUuid(),
-                            sharedPref.getThisDevice().getOwnerID(),
-                            resolveAddress(location.latitude, location.longitude),
-                            resolveDate(timestamp)
-                    );
-                    databaseReferenceLocations.child(position.getDayTime()).setValue(position);
-                    locationsList.add(position);
+                        String timestamp = String.valueOf(System.currentTimeMillis());
+                        //save location in the real-time database
+                        final Position position = new Position(
+                                location.latitude+"",
+                                location.longitude+"",
+                                timestamp,
+                                sharedPref.getThisDevice().getId(),
+                                sharedPref.getThisDevice().getUuid(),
+                                sharedPref.getThisDevice().getOwnerID(),
+                                resolveAddress(location.latitude, location.longitude),
+                                resolveDate(timestamp)
+                        );
+                        databaseReferenceLocations.child(position.getDayTime()).setValue(position);
+                        locationsList.add(position);
+                    }
                 }
-            }
-        });
+            });
+        //}
     }
 
     private String resolveDate(String timestamp) {

@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +28,8 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanQR"></activity>
+        <activity android:name=".HelpInfo"></activity>
+        <activity android:name=".ScanQR" />
         <activity android:name=".QRCodeActivity" />
         <activity android:name=".RegistraDispositivo" />
         <!--

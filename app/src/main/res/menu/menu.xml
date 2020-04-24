@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:title="@string/mappa"
+        android:id="@+id/mappa"
+        android:icon="@drawable/ic_map"
+        android:iconTint="?attr/textcolor"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="@string/impostazioni"
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings"
+        android:iconTint="?attr/textcolor"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="@string/registra_dispositivo"
+        android:id="@+id/registerDevice"
+        android:icon="@drawable/ic_phone"
+        android:iconTint="?attr/textcolor"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="@string/qr_code"
+        android:id="@+id/qrCode"
+        android:icon="@drawable/ic_qr"
+        android:iconTint="?attr/textcolor"
+        app:showAsAction="never"/>
+
+    <item android:title="@string/altro" android:icon = "@drawable/ic_more"
+        android:iconTint="?attr/textcolor">
+        <menu>
+            <item
+                android:title="@string/account"
+                android:id="@+id/account"
+                android:iconTint="?attr/textcolor"
+                android:icon="@drawable/ic_account"/>
+
+            <item
+                android:title="@string/aiuto_info"
+                android:id="@+id/helpInfo"
+                android:iconTint="?attr/textcolor"
+                android:icon="@drawable/ic_settings"/>
+
+            <item
+                android:title="@string/esci"
+                android:id="@+id/esci"
+                android:iconTint="?attr/textcolor"
+                android:icon="@drawable/ic_logout"/>
+        </menu>
+    </item>
+</menu>

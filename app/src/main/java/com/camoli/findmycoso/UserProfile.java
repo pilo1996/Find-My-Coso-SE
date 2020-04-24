@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -84,6 +85,7 @@ public class UserProfile extends AppCompatActivity {
             if(user.getPhotoUrl() != null){
                 imgProgressBar.setVisibility(View.INVISIBLE);
                 Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString()).into(userPic);
+                done();
             }
         }
         else{
@@ -97,6 +99,7 @@ public class UserProfile extends AppCompatActivity {
                 showProgressSave();
                 saveUserInformation();
                 hideProgressSave();
+                done();
             }
         });
 
@@ -136,7 +139,14 @@ public class UserProfile extends AppCompatActivity {
         saveBtn.setVisibility(View.VISIBLE);
     }
 
+    private void done(){
+        LottieAnimationView lottieAnimationView = findViewById(R.id.done_animation);
+        lottieAnimationView.setVisibility(View.VISIBLE);
+        lottieAnimationView.playAnimation();
+    }
+
     private void goHomeResumeState(){
+        done();
         goHomeBtn.setEnabled(true);
         goHomeBtn.setBackground(getDrawable(R.drawable.rounded_button_alt));
         sharedPref.setProfileUpdated();
@@ -200,6 +210,7 @@ public class UserProfile extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 localProfileImg = task.getResult().toString();
                                 Toast.makeText(getApplicationContext(), "Foto caricata", Toast.LENGTH_SHORT).show();
+                                done();
                                 imgProgressBar.setVisibility(View.INVISIBLE);
                                 saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
                                 saveBtn.setEnabled(true);

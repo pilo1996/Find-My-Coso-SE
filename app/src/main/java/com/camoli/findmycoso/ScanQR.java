@@ -7,11 +7,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
@@ -146,7 +148,11 @@ public class ScanQR extends AppCompatActivity {
             public void onClick(View v) {
                 if(favoriteButton.isEnabled()){
                     favoriteDBR.child(ID).setValue(new Device(uuid, name, ID, email, ownerID));
-                    favoriteIcon.setImageResource(R.drawable.ic_favorite_full);
+                    //favoriteIcon.setImageResource(R.drawable.ic_favorite_full);
+                    favoriteIcon.setVisibility(View.GONE);
+                    LottieAnimationView heart = findViewById(R.id.heart_animation);
+                    heart.setVisibility(View.VISIBLE);
+                    heart.playAnimation();
                     favoriteLabel.setText(R.string.salvato);
                     favoriteLabel.setTextColor(Color.parseColor("#303030"));
                     favoriteLabel.setEnabled(false);

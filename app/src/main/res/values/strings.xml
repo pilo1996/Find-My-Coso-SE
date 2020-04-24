@@ -117,4 +117,33 @@
     <string name="gia_salvato">Già salvato.</string>
     <string name="salvato">Salvato</string>
     <string name="nome_dispositivo_locations">(Nome dispositivo)</string>
+    <string name="mappa">Mappa</string>
+    <string name="esci">Esci</string>
+    <string name="impostazioni">Impostazioni</string>
+    <string name="altro">Altro</string>
+    <string name="qr_code">QR code</string>
+    <string name="nome_utente">Nome utente</string>
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="apri_menu">Apri menù laterale</string>
+    <string name="chiudi_menu">Chiudi menù laterale</string>
+    <string name="title_activity_prova123">prova123</string>
+    <string name="qr_code_scanner">QR Code Scanner</string>
+    <string name="aiuto">Aiuto</string>
+    <string name="men">Menù</string>
+    <string name="pulsante_men">Pulsante menù</string>
+    <string name="tieni_premuto_sul_qr_per_salvare_in_galleria">Tieni premuto sul QR per salvare in galleria.</string>
+    <string name="aiuto_info"><![CDATA[Aiuto & Info]]></string>
+    <string name="aiuto_e_informazioni">Aiuto e informazioni</string>
 </resources>

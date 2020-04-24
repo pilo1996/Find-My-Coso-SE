@@ -8,45 +8,67 @@
     android:background="?attr/backgroundcolor">
 
     <Toolbar
-        android:id="@+id/qrToolbar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:visibility="visible"
-        android:title="@string/qr"
         android:background="?attr/colorPrimary"
-        android:titleTextColor="@android:color/white">
-    </Toolbar>
+        android:title="@string/qr"
+        android:elevation="5dp"
+        android:titleTextColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/qrToolbar"
-        android:layout_above="@id/thisDeviceQRCode"
+        android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="30dp"
         android:autoSizeMaxTextSize="20sp"
-        android:autoSizeMinTextSize="15sp"
         android:autoSizeTextType="uniform"
         android:gravity="center"
-        android:padding="20sp"
+        android:padding="10sp"
         android:textColor="?attr/textcolor"
         android:text="@string/qr_explanation" />
+
+    <TextView
+        android:id="@+id/saveQRInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="30dp"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:padding="10sp"
+        android:textColor="?attr/textcolor"
+        android:text="@string/tieni_premuto_sul_qr_per_salvare_in_galleria" />
+
+
 
     <ImageView
         android:id="@+id/thisDeviceQRCode"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/saveQRInfo"
+        android:layout_marginTop="20dp"
         android:contentDescription="@string/qr_code_del_dispositivo_corrente" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_autoPlay="true"
+        android:id="@+id/coriandoli"
+        app:lottie_loop="false"
+        app:lottie_fileName="exploding_coriandoli.json"
+        android:forceHasOverlappingRendering="true"/>
 
     <Button
         android:id="@+id/scanQR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:layout_below="@id/thisDeviceQRCode"
         android:layout_centerHorizontal="true"
         android:background="@drawable/rounded_button_alt"
@@ -56,7 +78,6 @@
         android:autoSizeTextType="uniform"
         android:layout_alignStart="@id/thisDeviceQRCode"
         android:layout_alignEnd="@id/thisDeviceQRCode"
-        android:layout_marginTop="50dp"
         />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

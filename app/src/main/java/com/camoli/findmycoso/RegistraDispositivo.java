@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,12 +17,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,13 +41,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import static com.google.android.material.snackbar.Snackbar.make;
 
-public class RegistraDispositivo extends AppCompatActivity {
+public class RegistraDispositivo extends FragmentActivity {
 
     private FloatingActionButton fabRegDevice;
     private final int REQUEST_READ_PHONE_STATE = 1;
@@ -58,6 +65,56 @@ public class RegistraDispositivo extends AppCompatActivity {
     private String newID;
     private String deviceName;
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.mappa:
+                startActivity(new Intent(this, MapsActivity.class));
+                break;
+            case R.id.settings:
+                startActivity(new Intent(this, Impostazioni.class));
+                break;
+            case R.id.registerDevice:
+                break;
+            case R.id.qrCode:
+                startActivity(new Intent(this, QRCodeActivity.class));
+                break;
+            case R.id.account:
+                startActivity(new Intent(this, UserProfile.class));
+                break;
+            case R.id.helpInfo:
+                startActivity(new Intent(this, HelpInfo.class));
+                break;
+            case R.id.esci:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), Login.class));
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        menu.getItem(2).setVisible(false);
+        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+            try{
+                Method m = menu.getClass().getDeclaredMethod(
+                        "setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            }
+            catch(NoSuchMethodException e){
+                Log.e("Menù bitch", "onMenuOpened", e);
+            }
+            catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -84,15 +141,13 @@ public class RegistraDispositivo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         sharedpref = new SharedPref(this);
         if(sharedpref.getDarkModeState())
-            setTheme(R.style.DarkMode);
+            setTheme(R.style.DarkModeBackup);
         else
-            setTheme(R.style.AppTheme);
+            setTheme(R.style.AppThemeBackup);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registra_dispositivo);
-        getSupportActionBar().setTitle(getString(R.string.registra_dispositivo));
-        //getSupportActionBar().hide();
-        //toolbar = findViewById(R.id.toolbar);
-        //setActionBar(toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
         UUIDdisplay = findViewById(R.id.uuidLabel);
         nameDeviceLayout = findViewById(R.id.deviceNameLayout);
         snackbarCoordinator = findViewById(R.id.coordinatorSnackbar);
@@ -236,4 +291,5 @@ public class RegistraDispositivo extends AppCompatActivity {
         else
             return Character.toUpperCase(first) + s.substring(1);
     }
+
 }

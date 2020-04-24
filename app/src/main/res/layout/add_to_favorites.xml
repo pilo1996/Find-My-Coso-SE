@@ -101,28 +101,45 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
-            android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:padding="5dp"
-            android:layout_alignParentStart="true"
+            android:gravity="center"
             android:layout_marginEnd="10dp"
             android:layout_gravity="center">
 
-            <ImageView
-                android:id="@+id/favoriteIcon"
+            <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_favorite_border"
-                android:tint="@color/colorAccent"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"/>
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/favoriteIcon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_favorite_border"
+                    android:tint="@color/colorAccent"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:visibility="invisible"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:lottie_autoPlay="false"
+                    android:id="@+id/heart_animation"
+                    app:lottie_loop="false"
+                    app:lottie_fileName="paw_success.json"
+                    android:forceHasOverlappingRendering="true"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="5dp"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/addFavoriteLabel"

@@ -3,20 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical"
     tools:ignore="UseCompoundDrawables">
 
     <TextView
         android:layout_width="match_parent"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="25dp"
+        android:autoSizeMinTextSize="20sp"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
         android:layout_marginBottom="50dp"
         android:text="@string/in_questa_applicazione_potrai_localizzare_i_tuoi_dispositivi_android"
+        android:layout_gravity="center"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="21sp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        app:lottie_autoPlay="true"
+        android:id="@+id/animation_logo"
+        app:lottie_loop="true"
+        app:lottie_fileName="geolocalization.json"
+        android:forceHasOverlappingRendering="true"/>
 
     <ImageView
+        android:visibility="gone"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="center"

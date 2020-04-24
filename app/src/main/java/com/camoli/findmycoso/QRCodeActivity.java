@@ -1,9 +1,11 @@
 package com.camoli.findmycoso;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,21 +15,27 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 import androidmads.library.qrgenearator.QRGSaver;
 
 
-public class QRCodeActivity extends AppCompatActivity {
+public class QRCodeActivity extends FragmentActivity {
 
     private static final String TAG = "QR Exception";
     private SharedPref sharedpref;
@@ -38,19 +46,71 @@ public class QRCodeActivity extends AppCompatActivity {
     private CoordinatorLayout snackbarCoordinator;
     private Button scanButton;
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.mappa:
+                startActivity(new Intent(this, MapsActivity.class));
+                break;
+            case R.id.settings:
+                startActivity(new Intent(this, Impostazioni.class));
+                break;
+            case R.id.registerDevice:
+                startActivity(new Intent(this, RegistraDispositivo.class));
+                finish();
+                break;
+            case R.id.qrCode:
+                break;
+            case R.id.account:
+                startActivity(new Intent(this, UserProfile.class));
+                break;
+            case R.id.helpInfo:
+                startActivity(new Intent(this, HelpInfo.class));
+                break;
+            case R.id.esci:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), Login.class));
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        menu.getItem(3).setVisible(false);
+        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+            try{
+                Method m = menu.getClass().getDeclaredMethod(
+                        "setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            }
+            catch(NoSuchMethodException e){
+                Log.e("Menù bitch", "onMenuOpened", e);
+            }
+            catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedpref = new SharedPref(this);
 
         if(sharedpref.getDarkModeState())
-            setTheme(R.style.DarkMode);
+            setTheme(R.style.DarkModeBackup);
         else
-            setTheme(R.style.AppTheme);
+            setTheme(R.style.AppThemeBackup);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code_generator);
-        getSupportActionBar().hide();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
         qrCodeDevice = findViewById(R.id.thisDeviceQRCode);
         snackbarCoordinator = findViewById(R.id.coordinatorSnackbar);
         scanButton = findViewById(R.id.scanQR);

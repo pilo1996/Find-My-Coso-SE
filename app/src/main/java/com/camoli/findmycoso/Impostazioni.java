@@ -3,24 +3,33 @@ package com.camoli.findmycoso;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Impostazioni extends AppCompatActivity {
+import java.lang.reflect.Method;
+
+public class Impostazioni extends FragmentActivity {
 
     private Switch darkMode;
     private Button getPermissionsBtn, logOutBtn, updateProfileBtn;
@@ -59,18 +68,76 @@ public class Impostazioni extends AppCompatActivity {
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.mappa:
+                startActivity(new Intent(this, MapsActivity.class));
+                finish();
+                break;
+            case R.id.settings:
+                break;
+            case R.id.registerDevice:
+                startActivity(new Intent(this, RegistraDispositivo.class));
+                break;
+            case R.id.qrCode:
+                startActivity(new Intent(this, QRCodeActivity.class));
+                break;
+            case R.id.account:
+                startActivity(new Intent(this, UserProfile.class));
+                break;
+            case R.id.helpInfo:
+                startActivity(new Intent(this, HelpInfo.class));
+                break;
+            case R.id.esci:
+                FirebaseAuth.getInstance().signOut();
+                Intent i = new Intent(getApplicationContext(), Login.class);
+                int[] dim = new int[2];
+                logOutBtn.getLocationInWindow(dim);
+                i.putExtra("x", dim[0]+(logOutBtn.getWidth()/2));
+                i.putExtra("y", dim[1]+(logOutBtn.getHeight()/2));
+                startActivity(i);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        menu.getItem(1).setVisible(false);
+        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+            try{
+                Method m = menu.getClass().getDeclaredMethod(
+                        "setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            }
+            catch(NoSuchMethodException e){
+                Log.e("Menù bitch", "onMenuOpened", e);
+            }
+            catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         sharedpref = new SharedPref(this);
 
         if(sharedpref.getDarkModeState())
-            setTheme(R.style.DarkMode);
+            setTheme(R.style.DarkModeBackup);
         else
-            setTheme(R.style.AppTheme);
+            setTheme(R.style.AppThemeBackup);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
         getPermissionsBtn = findViewById(R.id.get_permissions);
         getPermissionsBtn.setOnClickListener(new View.OnClickListener() {
             @Override

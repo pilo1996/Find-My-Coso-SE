@@ -9,7 +9,7 @@
 
     <Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
@@ -17,9 +17,9 @@
         android:visibility="visible"
         android:title="@string/mappa_posizioni"
         android:background="?attr/colorPrimary"
+        android:elevation="5dp"
         android:titleTextColor="@android:color/white">
     </Toolbar>
-
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
@@ -39,11 +39,14 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="26dp"
         android:layout_marginEnd="26dp"
-        android:src="@mipmap/qr_logo"
+        android:src="@drawable/ic_qr"
+        android:tint="@android:color/white"
+        app:maxImageSize="30dp"
         app:borderWidth="0dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/settings"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#5f6769"
@@ -52,11 +55,14 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="26dp"
         android:layout_marginStart="26dp"
-        android:src="@mipmap/settings_white"
+        android:src="@drawable/ic_settings"
+        android:tint="@android:color/white"
+        app:maxImageSize="30dp"
         app:borderWidth="0dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addDevice"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/btn_bg"
@@ -65,21 +71,36 @@
         android:layout_above="@id/settings"
         android:layout_marginBottom="26dp"
         android:layout_marginStart="26dp"
-        android:src="@mipmap/white_plus"
+        android:src="@drawable/ic_add"
+        android:tint="@android:color/white"
+        app:maxImageSize="30dp"
         app:borderWidth="0dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/historyPositions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_green_dark"
+        android:backgroundTint="@color/colorAccent"
         android:hapticFeedbackEnabled="true"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@id/qr"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="26dp"
-        android:layout_marginEnd="26dp"
-        android:src="@mipmap/cronologia"
+        android:layout_marginStart="26dp"
+        android:layout_above="@id/qr"
+        android:src="@drawable/ic_history"
+        android:tint="@android:color/white"
+        app:maxImageSize="30dp"
         app:borderWidth="0dp"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        app:lottie_autoPlay="true"
+        android:id="@+id/geo_loading"
+        app:lottie_loop="true"
+        app:lottie_fileName="geolocalization.json"
+        android:forceHasOverlappingRendering="true"/>
 
     <ProgressBar
         android:id="@+id/progressBarDB"
@@ -87,13 +108,10 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:indeterminateTint="#18b0b0"
-        android:layout_alignTop="@id/settings"
+        android:layout_alignTop="@id/historyPositions"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="26dp"
-        android:layout_marginEnd="26dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="26dp"
-        android:layout_toStartOf="@id/qr"
-        android:layout_toEndOf="@id/settings"
         android:visibility="visible"/>
 
     <TextView
@@ -102,13 +120,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="14dp"
-        android:layout_alignTop="@id/settings"
+        android:layout_alignTop="@id/historyPositions"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="26dp"
         android:layout_marginEnd="26dp"
         android:layout_marginBottom="26dp"
         android:layout_toStartOf="@id/qr"
-        android:layout_toEndOf="@id/settings"
+        android:layout_toEndOf="@id/historyPositions"
         android:background="@drawable/rounded_label_dark"
         android:text="@string/nome_dispositivo"
         android:textColor="@android:color/white"
