@@ -33,6 +33,7 @@
         android:autoSizeTextType="uniform"
         android:gravity="center"
         android:padding="20sp"
+        android:textColor="?attr/textcolor"
         android:text="@string/qr_explanation" />
 
     <ImageView

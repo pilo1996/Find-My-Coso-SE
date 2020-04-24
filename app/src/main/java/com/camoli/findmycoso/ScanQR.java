@@ -32,9 +32,18 @@ public class ScanQR extends AppCompatActivity {
     private CodeScannerView scannerView;
     private String[] components;
     private BottomSheetBehavior bottomSheetBehavior;
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPref = new SharedPref(this);
+
+        if(sharedPref.getDarkModeState())
+            setTheme(R.style.DarkMode);
+        else
+            setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qr);
         scannerView = findViewById(R.id.scanner_view);

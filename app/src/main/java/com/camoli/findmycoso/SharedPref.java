@@ -2,6 +2,7 @@ package com.camoli.findmycoso;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -105,5 +106,4 @@ public class SharedPref {
             return selectedDevice;
         }
     }
-
 }

@@ -3,6 +3,7 @@ package com.camoli.findmycoso;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,10 +30,12 @@ public class DeviceBottomSheetSelector extends BottomSheetDialogFragment {
     private List<Device> deviceList;
     private DeviceList devices;
     private Activity c;
+    private SharedPref sharedPref;
 
     public DeviceBottomSheetSelector(List<Device> deviceList, Activity c) {
             this.deviceList = deviceList;
             this.c = c;
+            sharedPref = new SharedPref(c.getApplicationContext());
     }
 
     @Nullable

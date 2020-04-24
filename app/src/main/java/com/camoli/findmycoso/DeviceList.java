@@ -1,6 +1,8 @@
 package com.camoli.findmycoso;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DeviceList extends ArrayAdapter<Device> {
 
@@ -43,33 +46,32 @@ public class DeviceList extends ArrayAdapter<Device> {
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = context.getLayoutInflater();
-        final View listViewPositions = inflater.inflate(resource, null, true);
+        final LayoutInflater inflater = context.getLayoutInflater();
+        final View listViewDevices = inflater.inflate(resource, null, true);
 
         final Device device = devices.get(position);
-        System.out.println("Arriva a DeviceList");
 
         if(device.getId().equals("error"))
-            return listViewPositions;
+            return listViewDevices;
 
-        final LinearLayout thisDevice = listViewPositions.findViewById(R.id.thisDevice);
-        final LinearLayout thisEntireDevice = listViewPositions.findViewById(R.id.thisDeviceEntire);
+        final LinearLayout thisDevice = listViewDevices.findViewById(R.id.thisDevice);
+        final LinearLayout thisEntireDevice = listViewDevices.findViewById(R.id.thisDeviceEntire);
         thisEntireDevice.setVisibility(View.VISIBLE);
 
-        final ImageButton deleteSingleDevice = listViewPositions.findViewById(R.id.delete_single_device);
+        final ImageButton deleteSingleDevice = listViewDevices.findViewById(R.id.delete_single_device);
 
-        final RadioButton radioButton = listViewPositions.findViewById(R.id.radioButton_selected);
+        final RadioButton radioButton = listViewDevices.findViewById(R.id.radioButton_selected);
         if(sharedPref.getSelectedDevice().getId().equals(device.getId())){
             radioButton.setChecked(true);
         }
 
-        TextView textView = listViewPositions.findViewById(R.id.deviceName);
+        TextView textView = listViewDevices.findViewById(R.id.deviceName);
         textView.setText(device.getName());
-        textView = listViewPositions.findViewById(R.id.deviceInfo);
+        textView = listViewDevices.findViewById(R.id.deviceInfo);
         textView.setText(device.getId());
 
         if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(device.getOwnerID())){
-            textView = listViewPositions.findViewById(R.id.isYourDevice);
+            textView = listViewDevices.findViewById(R.id.isYourDevice);
             textView.setText(R.string.dispositivo_aggiunto_da_qr);
         }
 
@@ -95,10 +97,11 @@ public class DeviceList extends ArrayAdapter<Device> {
         });
 
         radioButtonsList.add(radioButton);
-        return listViewPositions;
+        return listViewDevices;
     }
 
     public List<RadioButton> getRadioButtonsList(){
         return radioButtonsList;
     }
+
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,8 @@ public class PositionBottomSheetDialog extends BottomSheetDialogFragment {
         View v = inflater.inflate(R.layout.layout_history_dialog_, container,false);
         adapter = new MyPositionAdapter(c, positionList);
         deleteAll = v.findViewById(R.id.deleteAll);
+        TextView deviceSelected = (TextView) v.findViewById(R.id.deviceNameSelected);
+        deviceSelected.setText(sharedPref.getSelectedDevice().getName());
         close = v.findViewById(R.id.chiudi);
         close.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,12 +3,15 @@ package com.camoli.findmycoso;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -17,6 +20,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ListAdapter;
@@ -49,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Queue;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -97,6 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ProgressBar progressBarDB;
     private List<Device> deviceFavoritesList = new ArrayList<>();
     private DatabaseReference databaseReferenceFavoriteDevices;
+    private DeviceBottomSheetSelector bottomSheetSelector;
 
     private void stampaDevice(Device device){
         System.out.println("Device ID: "+device.getId());
@@ -288,7 +294,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
-                   // retriveLocations();
+                    retriveLocations();
                     PositionBottomSheetDialog bottomSheetSelector = new PositionBottomSheetDialog(MapsActivity.this, locationsList);
                     bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
                 }
@@ -302,9 +308,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
-                    devicesList.addAll(deviceFavoritesList);
-                    DeviceBottomSheetSelector bottomSheetSelector = new DeviceBottomSheetSelector(devicesList, MapsActivity.this);
+                    for (Device d : deviceFavoritesList){
+                        if(!devicesList.contains(d))
+                            devicesList.add(d);
+                    }
+
+                    bottomSheetSelector = new DeviceBottomSheetSelector(devicesList, MapsActivity.this);
                     bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
+                    deviceName.setText(sharedPref.getSelectedDevice().getName());
                 }
             }
         });
@@ -455,4 +466,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        deviceName.setText(sharedPref.getSelectedDevice().getName());
+    }
+
 }

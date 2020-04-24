@@ -116,4 +116,5 @@
     <string name="aggiungi_ai_preferiti">Aggiungi ai preferiti</string>
     <string name="gia_salvato">Già salvato.</string>
     <string name="salvato">Salvato</string>
+    <string name="nome_dispositivo_locations">(Nome dispositivo)</string>
 </resources>

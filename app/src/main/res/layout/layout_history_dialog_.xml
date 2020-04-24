@@ -11,25 +11,44 @@
     app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <TextView
-        android:id="@+id/historyLabel"
+    <LinearLayout
+        android:id="@+id/labels"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/cronologia_posizioni"
-        android:layout_marginBottom="5dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorAccent"
-        android:textSize="19sp"
-        android:autoSizeMaxTextSize="20sp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:id="@+id/historyLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cronologia_posizioni"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:textSize="19sp"
+            android:autoSizeMaxTextSize="20sp"/>
+        <TextView
+            android:id="@+id/deviceNameSelected"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeTextType="uniform"
+            android:layout_marginStart="10dp"
+            android:text="@string/nome_dispositivo_locations"
+            android:textColor="?attr/textcolor"
+            android:textSize="13sp"
+            android:textStyle="italic"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_above="@id/pulsanti"
-        android:layout_below="@id/historyLabel"
+        android:layout_below="@id/labels"
         android:layout_centerHorizontal="true">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewPositions"
