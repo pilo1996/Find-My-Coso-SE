@@ -10,13 +10,19 @@
     tools:ignore="UseCompoundDrawables">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:textColor="@android:color/white"
         android:text="@string/consultare_lo_storico_delle_loro_posizioni"
+        android:layout_width="match_parent"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="25dp"
+        android:autoSizeMinTextSize="20sp"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="21sp" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:layout_width="250dp"

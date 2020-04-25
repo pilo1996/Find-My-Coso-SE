@@ -18,21 +18,21 @@
     </ListView>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/thisDeviceEntire"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="?android:selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:padding="12dp">
 
         <LinearLayout
             android:id="@+id/thisDevice"
+            android:clickable="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/radioButton_selected"
@@ -57,7 +57,7 @@
 
                 <TextView
                     android:id="@+id/deviceName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:gravity="center_vertical"
@@ -70,7 +70,7 @@
 
                 <TextView
                     android:id="@+id/deviceInfo"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/id_dispositivo"
                     android:textColor="?attr/textcolor"
@@ -81,19 +81,16 @@
 
                 <TextView
                     android:id="@+id/isYourDevice"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_green_light"
-                    android:textStyle="italic"
                     android:text="@string/sei_il_proprietario_di_questo_dispositivo"
+                    android:textColor="@android:color/holo_green_light"
                     android:textSize="15sp"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMaxTextSize="15dp"
-                    />
+                    android:textStyle="italic" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
 
         <ImageButton
             android:id="@+id/delete_single_device"
@@ -103,7 +100,7 @@
             android:background="@android:color/transparent"
             android:tint="@color/colorAccent"
             android:clickable="true"
-            android:visibility="visible"/>
+            android:contentDescription="@string/elimina_dispositivo" />
 
     </LinearLayout>
 

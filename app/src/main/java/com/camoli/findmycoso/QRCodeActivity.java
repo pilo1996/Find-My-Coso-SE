@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -156,26 +157,7 @@ public class QRCodeActivity extends FragmentActivity {
 
     private boolean saveQRinGallery(){
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-            File direct = this.getExternalFilesDir("QR");
-
-            String fileName = sharedpref.getThisDevice().getId();
-
-            if (!direct.exists()) {
-                File qrDirectory = new File(direct.getPath());
-                qrDirectory.mkdirs();
-            }
-            File file = new File(direct.getPath(), fileName);
-            if (file.exists()) {
-                file.delete();
-            }
-            try {   // Save with location, value, bitmap returned and type of Image(JPG/PNG).
-                    QRGSaver qrgSaver = new QRGSaver();
-                    qrgSaver.save(direct.getPath(), fileName, bitmap, QRGContents.ImageType.IMAGE_JPEG);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "QR"+sharedpref.getThisDevice().getId() , "Codice QR di "+sharedpref.getThisDevice().getName());
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             showSnackBarCustom("Mancano i permessi per accedere alla galleria.", "#ffa500");

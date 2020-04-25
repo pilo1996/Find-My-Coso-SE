@@ -91,6 +91,8 @@ public class Login extends AppCompatActivity {
         login.setEnabled(false);
         login.setBackground(getDrawable(R.drawable.rounded_button_disabled));
         sharedPref = new SharedPref(getApplicationContext());
+        sharedPref.setThisDevice(new Device());
+        sharedPref.setSelectedDevice(new Device());
         signup = findViewById(R.id.signup_button);
         resetPassword = findViewById(R.id.reset_password);
         layoutInputEmail = findViewById(R.id.email_input_layout);

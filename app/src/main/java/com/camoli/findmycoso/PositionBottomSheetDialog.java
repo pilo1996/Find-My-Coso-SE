@@ -57,7 +57,7 @@ public class PositionBottomSheetDialog extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 DatabaseReference aux = FirebaseDatabase.getInstance().getReference("/locations/");
-                aux.child(sharedPref.getSelectedDevice().getId()).setValue(null);
+                aux.child(sharedPref.getSelectedDevice().getId()).removeValue();
                 dismiss();
             }
         });

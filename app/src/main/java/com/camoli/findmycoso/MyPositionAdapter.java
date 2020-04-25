@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,7 +71,7 @@ public class MyPositionAdapter extends RecyclerView.Adapter<MyPositionAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     DatabaseReference item = FirebaseDatabase.getInstance().getReference("/locations/"+temp.getId());
-                    item.child(temp.getDayTime()).setValue(null);
+                    item.child(temp.getDayTime()).removeValue();
                     positionList.remove(position);
                     notifyItemRemoved(position);
                 }

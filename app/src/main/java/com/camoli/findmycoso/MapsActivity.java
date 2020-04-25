@@ -176,6 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void retriveDevices(){
         String temp;
+        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
         //riceve dati per i dispositivi registrati nell'account
         databaseReferenceDevices.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -218,6 +219,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void retriveLocations(){
         String temp;
 
+        databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
         //riceve dati per le posizioni del dispositivo associato all'account
 
         databaseReferenceLocations.addValueEventListener(new ValueEventListener() {
@@ -350,7 +352,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fabHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(deviceName.getText().equals(R.string.registra_il_dispositivo)){
+                if(sharedPref.getThisDevice().getId().equals("error") || deviceName.getText().equals(R.string.registra_il_dispositivo)){
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
@@ -364,19 +366,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         deviceName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(deviceName.getText().equals(R.string.registra_il_dispositivo)){
+                for (Device d : deviceFavoritesList){
+                    if(!devicesList.contains(d))
+                        devicesList.add(d);
+                }
+                if(devicesList.size() == 0 || deviceName.getText().equals(R.string.registra_il_dispositivo)){
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
-                    for (Device d : deviceFavoritesList){
-                        if(!devicesList.contains(d))
-                            devicesList.add(d);
-                    }
-
                     bottomSheetSelector = new DeviceBottomSheetSelector(devicesList, MapsActivity.this);
                     bottomSheetSelector.show(getSupportFragmentManager(),"Dialog");
                     deviceName.setText(sharedPref.getSelectedDevice().getName());
                 }
+                retriveDevices();
             }
         });
 
@@ -452,7 +454,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-        //if(sharedPref.getSelectedDevice().getId().equals(sharedPref.getThisDevice().getId())){
+        if(!sharedPref.getThisDevice().getId().equals("error")){
             Task<Location> task = fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
@@ -477,7 +479,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
             });
-        //}
+        }
     }
 
     private String resolveDate(String timestamp) {

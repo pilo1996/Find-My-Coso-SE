@@ -240,6 +240,12 @@ public class UserProfile extends AppCompatActivity {
             } catch (IOException e) {
                 System.out.println("Errore BITMAP");
             }
+        }else {
+            imgProgressBar.setVisibility(View.INVISIBLE);
+            Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString()).into(userPic);
+            saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
+            saveBtn.setEnabled(true);
+            done();
         }
     }
 

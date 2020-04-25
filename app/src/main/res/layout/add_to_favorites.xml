@@ -128,7 +128,7 @@
                     app:lottie_autoPlay="false"
                     android:id="@+id/heart_animation"
                     app:lottie_loop="false"
-                    app:lottie_fileName="paw_success.json"
+                    app:lottie_fileName="cuore.json"
                     android:forceHasOverlappingRendering="true"/>
             </LinearLayout>
 

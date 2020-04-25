@@ -92,7 +92,7 @@
     <string name="nome_dispositivo">Nome Dispositivo</string>
     <string name="smartphone_icon">smartphone icon</string>
     <string name="id_dispositivo">Id dispositivo</string>
-    <string name="sei_il_proprietario_di_questo_dispositivo">Sei il proprietario di questo dispositivo.</string>
+    <string name="sei_il_proprietario_di_questo_dispositivo">Sei il proprietario di questo\ndispositivo.</string>
     <string name="blank" />
     <string name="dispositivo_aggiunto_da_qr">Dispositivo aggiunto da QR</string>
     <string name="cronologia_posizioni">Cronologia posizioni</string>
@@ -146,4 +146,5 @@
     <string name="tieni_premuto_sul_qr_per_salvare_in_galleria">Tieni premuto sul QR per salvare in galleria.</string>
     <string name="aiuto_info"><![CDATA[Aiuto & Info]]></string>
     <string name="aiuto_e_informazioni">Aiuto e informazioni</string>
+    <string name="elimina_dispositivo">Elimina dispositivo</string>
 </resources>

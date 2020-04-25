@@ -5,20 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +23,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.Result;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ScanQR extends AppCompatActivity {
 
@@ -90,6 +90,7 @@ public class ScanQR extends AppCompatActivity {
     }
 
     private void processDialog(final String uuid, final String name, final String ID, final String email, final String ownerID){
+        final List<Device> dbDevices = new ArrayList<>();
         final LinearLayout theDevice = findViewById(R.id.theDevice);
         theDevice.setVisibility(View.VISIBLE);
         final LinearLayout favoriteButton = findViewById(R.id.addFavoriteButton);
@@ -123,8 +124,12 @@ public class ScanQR extends AppCompatActivity {
             favoriteDBR.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    dbDevices.clear();
                     for (DataSnapshot id : dataSnapshot.getChildren()){
-                        if(id.getValue(String.class).equals(ID))
+                        dbDevices.add(id.getValue(Device.class));
+                    }
+                    for (Device d : dbDevices){
+                        if(d.getId().equals(ID))
                             trovato[0] = true;
                     }
                 }

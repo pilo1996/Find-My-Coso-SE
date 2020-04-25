@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/resetlabel"
         android:hint="@string/email"
+        android:textColor="@android:color/white"
         android:textColorHint="@android:color/darker_gray"
         android:backgroundTint="@android:color/white"
         />
