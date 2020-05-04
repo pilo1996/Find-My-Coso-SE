@@ -10,7 +10,7 @@ Dal punto di vista dell'utente finale, _Find My Coso_ è un servizio costituito 
 * Un'**applicazione Android**, che permetterà anche'essa la registrazione dell'utenza e l'accesso, consultare lo storico, fornire la posizione attuale (anche quando l'app è in background) e gestire l'uso dei QR (scanner di qr dei dispositivi altrui, dandone però una posizione approssimativa, privacy ndr). (Quasi finita)
 
 ## Realizzazione
-Verranno utilizzati software come **Android Studio**, **PHPStorm**, e servizi SaaS come **Firebase**.
+Verranno utilizzati software come **Android Studio**, **PHPStorm**, e altre dipendenze.
 
 ### Dipendenze
 Sono utilizzate le seguenti dipendenze:
