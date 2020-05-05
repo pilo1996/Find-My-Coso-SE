@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -14,7 +14,11 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import static com.camoli.findmycoso.SplashScreenActivity.startAnimation;
+
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.models.SharedPref;
+
+import static com.camoli.findmycoso.activities.SplashScreenActivity.startAnimation;
 
 public class WelcomeActivity extends AppCompatActivity {
 

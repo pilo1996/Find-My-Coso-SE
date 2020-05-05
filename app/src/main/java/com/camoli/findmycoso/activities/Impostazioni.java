@@ -1,14 +1,11 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,7 +22,9 @@ import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 
 import java.lang.reflect.Method;
 
@@ -36,7 +35,7 @@ public class Impostazioni extends FragmentActivity {
     SharedPref sharedpref;
     private Object mMap;
 
-    private static final String[] REQUIRED_PERMISSIONS = new String[] {
+    private static final String[] REQUIRED_PERMISSIONS = new String[] { //solo per api>=29
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_WIFI_STATE,
@@ -48,7 +47,7 @@ public class Impostazioni extends FragmentActivity {
             Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION, //solo per api>=29
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.CAMERA,
     };
     private static final String[] REQUIRED_PERMISSIONS_OLD = new String[] { //api <= 28
@@ -89,7 +88,7 @@ public class Impostazioni extends FragmentActivity {
                 startActivity(new Intent(this, HelpInfo.class));
                 break;
             case R.id.esci:
-                FirebaseAuth.getInstance().signOut();
+                sharedpref.setCurrentUser(new User(-1));
                 Intent i = new Intent(getApplicationContext(), Login.class);
                 int[] dim = new int[2];
                 logOutBtn.getLocationInWindow(dim);
@@ -180,7 +179,7 @@ public class Impostazioni extends FragmentActivity {
         logOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
+                sharedpref.setCurrentUser(new User(-1));
                 Intent i = new Intent(getApplicationContext(), Login.class);
                 int[] dim = new int[2];
                 logOutBtn.getLocationInWindow(dim);

@@ -1,31 +1,28 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DefaultResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Position;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyPositionAdapter extends RecyclerView.Adapter<MyPositionAdapter.ViewHolder> {
 
@@ -70,10 +67,22 @@ public class MyPositionAdapter extends RecyclerView.Adapter<MyPositionAdapter.Vi
             holder.imgSingleDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DatabaseReference item = FirebaseDatabase.getInstance().getReference("/locations/"+temp.getId());
-                    item.child(temp.getDayTime()).removeValue();
-                    positionList.remove(position);
-                    notifyItemRemoved(position);
+                    Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().deleteSinglePositionByID(temp.getPositionID());
+                    call.enqueue(new Callback<DefaultResponse>() {
+                        @Override
+                        public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                            if (!response.body().isError()){
+                                positionList.remove(position);
+                                notifyItemRemoved(position);
+                            }else
+                                System.out.println(response.body().getMessage());
+                        }
+
+                        @Override
+                        public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                            System.out.println(t.getMessage());
+                        }
+                    });
                 }
             });
 

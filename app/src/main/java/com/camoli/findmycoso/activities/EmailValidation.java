@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +10,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.models.SharedPref;
 
 public class EmailValidation extends AppCompatActivity {
 
@@ -20,24 +19,25 @@ public class EmailValidation extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView emailAddress;
     private String email;
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_validation);
         getSupportActionBar().hide();
-
+        sharedPref = new SharedPref(getApplicationContext());
         goBackToLogin = findViewById(R.id.BackToLogin);
         resendEmail = findViewById(R.id.resendEmail);
         progressBar = findViewById(R.id.resendProgressBar);
         emailAddress = findViewById(R.id.emailAddress);
 
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+        if(sharedPref.getCurrentUser().getUserID() == -1){
             startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
         }
 
-        email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        email = sharedPref.getCurrentUser().getEmail();
         emailAddress.setText(email);
 
         goBackToLogin.setOnClickListener(new View.OnClickListener() {
@@ -54,19 +54,17 @@ public class EmailValidation extends AppCompatActivity {
                 resendEmail.setText("");
                 resendEmail.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        resendEmail.setText(getString(R.string.non_hai_ricevuto_la_mail));
-                        resendEmail.setEnabled(true);
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
+                //TODO invio email di verifica validazione
+                /*
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                resendEmail.setText(getString(R.string.non_hai_ricevuto_la_mail));
+                resendEmail.setEnabled(true);
+                progressBar.setVisibility(View.INVISIBLE);
+                */
             }
         });
 

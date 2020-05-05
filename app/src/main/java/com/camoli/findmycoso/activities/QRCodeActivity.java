@@ -1,7 +1,6 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,15 +24,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.models.Device;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.File;
 import java.lang.reflect.Method;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
-import androidmads.library.qrgenearator.QRGSaver;
 
 
 public class QRCodeActivity extends FragmentActivity {
@@ -69,7 +69,7 @@ public class QRCodeActivity extends FragmentActivity {
                 startActivity(new Intent(this, HelpInfo.class));
                 break;
             case R.id.esci:
-                FirebaseAuth.getInstance().signOut();
+                sharedpref.setCurrentUser(new User(-1));
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;
@@ -149,10 +149,10 @@ public class QRCodeActivity extends FragmentActivity {
 
     private String encodeQRData() {
         Device thisDevice = sharedpref.getThisDevice();
-        if(thisDevice == null || thisDevice.getId().equals("error"))
+        if(thisDevice == null || thisDevice.getId() == -1)
             return "";
         System.out.println("UUID QRCodeActivity: "+thisDevice.getUuid());
-        return thisDevice.getUuid()+";"+thisDevice.getName()+";"+thisDevice.getId()+";"+thisDevice.getuserEmail()+";"+thisDevice.getOwnerID()+";";
+        return thisDevice.getUuid()+";"+thisDevice.getName()+";"+thisDevice.getId()+";"+thisDevice.getEmail()+";"+thisDevice.getOwnerID()+";";
     }
 
     private boolean saveQRinGallery(){

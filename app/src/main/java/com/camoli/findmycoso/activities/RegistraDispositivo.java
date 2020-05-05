@@ -1,22 +1,14 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,27 +16,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DeviceListResponse;
+import com.camoli.findmycoso.api.DeviceResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Device;
+import com.camoli.findmycoso.models.DeviceUuidFactory;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.google.android.material.snackbar.Snackbar.make;
 
@@ -57,13 +49,13 @@ public class RegistraDispositivo extends FragmentActivity {
     private TextView UUIDdisplay, registrationStatus;
     private Toolbar toolbar;
     private SharedPref sharedpref;
-    private DatabaseReference databaseReferenceDevice;
     private List<Device> deviceList = new ArrayList<>();
     private View snackbarCoordinator;
     private ProgressBar waitingProgress;
-    private FirebaseUser user;
     private String newID;
     private String deviceName;
+    private User user;
+    private Device device;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -86,7 +78,7 @@ public class RegistraDispositivo extends FragmentActivity {
                 startActivity(new Intent(this, HelpInfo.class));
                 break;
             case R.id.esci:
-                FirebaseAuth.getInstance().signOut();
+                sharedpref.setCurrentUser(new User(-1));
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;
@@ -119,22 +111,21 @@ public class RegistraDispositivo extends FragmentActivity {
     protected void onStart() {
         super.onStart();
         deviceList.clear();
-        databaseReferenceDevice.addValueEventListener(new ValueEventListener() {
+        Call<DeviceListResponse> call = RetrofitClient.getInstance().getApi().getAllDevicesRegistered(sharedpref.getCurrentUser().getUserID());
+        call.enqueue(new Callback<DeviceListResponse>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
-                    deviceList.add(dev.getValue(Device.class));
-                }
+            public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
+                if(!response.body().isError()){
+                    deviceList.addAll(response.body().getDeviceList());
+                }else
+                    System.out.println(response.body().getMessage());
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("Errore imprevisto nel scaricare i dati...");
+            public void onFailure(Call<DeviceListResponse> call, Throwable t) {
+                System.out.println(t.getMessage());
             }
         });
-
-        String temp = databaseReferenceDevice.child(user.getUid()).push().getKey();
-        databaseReferenceDevice.child(temp).setValue(null);
     }
 
     @Override
@@ -155,14 +146,13 @@ public class RegistraDispositivo extends FragmentActivity {
         waitingProgress = findViewById(R.id.waitingBar);
         registrationStatus = findViewById(R.id.registeredStatus);
 
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+        if(sharedpref.getCurrentUser().getUserID() == -1){
             startActivity(new Intent(this, Login.class));
             finish();
         }
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        user = sharedpref.getCurrentUser();
         userEmail = user.getEmail();
-        databaseReferenceDevice = FirebaseDatabase.getInstance().getReference("/users/"+user.getUid());
 
         manufacturerModel = getDeviceName();
         DeviceUuidFactory deviceUuidFactory = new DeviceUuidFactory(this);
@@ -214,26 +204,27 @@ public class RegistraDispositivo extends FragmentActivity {
                     }
                 }
                 else {
-                    DatabaseReference temp = databaseReferenceDevice.push();
-                    newID = temp.getKey();
-                    if(newID == null)
-                        showSnackBarCustom("Errore imprevisto.", Color.RED+"");
-                    else{
-                        final Device device = new Device(UUID, deviceName, newID, userEmail, user.getUid());
-                        databaseReferenceDevice.child(newID).setValue(device).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    registrationStatus.setText("è");
-                                    showSnackBarCustom("Dispositivo aggiunto al tuo account.", "#2fd339");
-                                }
-                                else
-                                    showSnackBarCustom("Errore imprevisto.", "#ff0000");
+                    device = new Device(UUID, deviceName, user.getUserID(), userEmail);
+                    Call<DeviceResponse> call = RetrofitClient.getInstance().getApi().registerDevice(deviceName, UUID, user.getUserID());
+                    call.enqueue(new Callback<DeviceResponse>() {
+                        @Override
+                        public void onResponse(Call<DeviceResponse> call, Response<DeviceResponse> response) {
+                            if(response.body().isError())
+                                showSnackBarCustom(response.body().getMessage(), "#ff0000");
+                            else {
+                                registrationStatus.setText("è");
+                                showSnackBarCustom("Dispositivo aggiunto al tuo account.", "#2fd339");
+                                device = response.body().getDevice();
                             }
-                        });
-                        sharedpref.setThisDevice(device);
-                        sharedpref.setSelectedDevice(device);
-                    }
+                        }
+
+                        @Override
+                        public void onFailure(Call<DeviceResponse> call, Throwable t) {
+                            showSnackBarCustom("Errore imprevisto.", "#ff0000");
+                        }
+                    });
+                    sharedpref.setThisDevice(device);
+                    sharedpref.setSelectedDevice(device);
                 }
                 waitingProgress.setVisibility(View.INVISIBLE);
             }

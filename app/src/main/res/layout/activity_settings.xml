@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Impostazioni"
+    tools:context=".activities.Impostazioni"
     android:orientation="vertical"
     android:background="?attr/backgroundcolor">
 
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
-        tools:context=".Impostazioni">
+        tools:context=".activities.Impostazioni">
 
         <androidx.cardview.widget.CardView
             android:layout_height="wrap_content"

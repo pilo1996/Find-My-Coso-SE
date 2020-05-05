@@ -1,6 +1,5 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.Animator;
@@ -9,26 +8,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.SharedPref;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class Signup extends AppCompatActivity {
 
@@ -52,7 +53,6 @@ public class Signup extends AppCompatActivity {
                     "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+"
             );
 
-    private FirebaseAuth mAuth;
     private SharedPref sharedPref;
     private ProgressBar progressBar;
 
@@ -67,8 +67,6 @@ public class Signup extends AppCompatActivity {
 
         i = getIntent();
         background = findViewById(R.id.contenitore);
-
-        mAuth = FirebaseAuth.getInstance();
 
         sharedPref = new SharedPref(getApplicationContext());
 
@@ -124,31 +122,47 @@ public class Signup extends AppCompatActivity {
                 confirmSignup.setText("");
                 confirmSignup.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
+                Call<ResponseBody> call = RetrofitClient.getInstance().getApi().createUser(email, password, email.substring(0, email.indexOf("@")-1));
+
+                call.enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(getApplicationContext(), "Registrato con successo!", Toast.LENGTH_SHORT).show();
-                            int dim[] = new int[2];
-                            turnBackToLogin.getLocationInWindow(dim);
-                            i.putExtra("x", dim[0]+(turnBackToLogin.getWidth()/2));
-                            i.putExtra("y", dim[1]+(turnBackToLogin.getHeight()/2));
-                            startActivity(new Intent(getApplicationContext(), Login.class));
-                        }else {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            confirmSignup.setText(R.string.conferma_registrazione);
-                            confirmSignup.setEnabled(true);
-                            Toast.makeText(getApplicationContext(), "Impossibile registrarsi.", Toast.LENGTH_SHORT).show();
-                            //se la mail è già registrata
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException){
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        switch (response.code()){
+                            case 201: //registrazione andata a buon fine
+                                Toast.makeText(getApplicationContext(), "Registrato con successo!", Toast.LENGTH_SHORT).show();
+                                int dim[] = new int[2];
+                                turnBackToLogin.getLocationInWindow(dim);
+                                i.putExtra("x", dim[0]+(turnBackToLogin.getWidth()/2));
+                                i.putExtra("y", dim[1]+(turnBackToLogin.getHeight()/2));
+                                startActivity(new Intent(getApplicationContext(), Login.class));
+                                break;
+                            case 422: //email già registrata
+                                progressBar.setVisibility(View.INVISIBLE);
+                                confirmSignup.setText(R.string.conferma_registrazione);
+                                confirmSignup.setEnabled(true);
                                 Toast.makeText(getApplicationContext(), "Email già registrata.", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                                break;
+                            case 423: //errore a caso
+                                progressBar.setVisibility(View.INVISIBLE);
+                                confirmSignup.setText(R.string.conferma_registrazione);
+                                confirmSignup.setEnabled(true);
+                                try {
+                                    Toast.makeText(getApplicationContext(), "Impossibile registrarsi. ("+response.errorBody().string()+")", Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
                         }
                     }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
                 });
+
             }
         });
 

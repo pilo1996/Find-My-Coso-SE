@@ -1,25 +1,29 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DefaultResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Position;
+import com.camoli.findmycoso.models.SharedPref;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class PositionBottomSheetDialog extends BottomSheetDialogFragment {
@@ -56,9 +60,21 @@ public class PositionBottomSheetDialog extends BottomSheetDialogFragment {
         deleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference aux = FirebaseDatabase.getInstance().getReference("/locations/");
-                aux.child(sharedPref.getSelectedDevice().getId()).removeValue();
-                dismiss();
+                Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().deleteAllPositionsByDevice(sharedPref.getSelectedDevice().getId(), sharedPref.getCurrentUser().getUserID());
+                call.enqueue(new Callback<DefaultResponse>() {
+                    @Override
+                    public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                        if(!response.body().isError())
+                            dismiss();
+                        else
+                            System.out.println(response.body().getMessage());
+                    }
+
+                    @Override
+                    public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                        System.out.println(t.getMessage());
+                    }
+                });
             }
         });
         recyclerView = v.findViewById(R.id.recyclerViewPositions);

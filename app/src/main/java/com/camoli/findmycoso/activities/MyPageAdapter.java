@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import android.content.Context;
 import android.view.LayoutInflater;

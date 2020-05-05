@@ -1,18 +1,12 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,23 +15,18 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.api.LoginResponse;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserProfile extends AppCompatActivity {
 
@@ -48,12 +37,9 @@ public class UserProfile extends AppCompatActivity {
     private TextInputLayout nome_layout;
     private static final int CHOOSE_IMAGE = 101;
     private String localProfileImg;
-    private StorageReference mStorageRef;
     private Bitmap bitmap;
     private ProgressBar saveProgressBar, imgProgressBar;
-    private FirebaseAuth mAuth;
-    private FirebaseUser user;
-    private StorageReference profileImgRef;
+    private User currentUser;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -70,21 +56,13 @@ public class UserProfile extends AppCompatActivity {
         saveProgressBar = findViewById(R.id.save_progress_bar);
         imgProgressBar = findViewById(R.id.imgProgress_bar);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        currentUser = sharedPref.getCurrentUser();
 
-        if(mAuth.getCurrentUser() != null){
-            if (mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName() == ""){
-                goHomeBtn.setEnabled(false);
-                goHomeBtn.setBackground(getDrawable(R.drawable.rounded_button_disabled));
-            }
-            else{
-                nome_layout.getEditText().setText(mAuth.getCurrentUser().getDisplayName());
-            }
-            if(user.getPhotoUrl() != null){
+        if(currentUser.getUserID() != -1){
+            nome_layout.getEditText().setText(currentUser.getNome());
+            if(currentUser.getProfile_pic() != null && !currentUser.getProfile_pic().equals("") && !currentUser.getProfile_pic().equals("error")){
                 imgProgressBar.setVisibility(View.INVISIBLE);
-                Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString()).into(userPic);
+                Glide.with(getApplicationContext()).load(currentUser.getProfile_pic()).into(userPic);
                 done();
             }
         }
@@ -106,7 +84,7 @@ public class UserProfile extends AppCompatActivity {
         goHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!user.getDisplayName().equals(""))
+                if(currentUser.getUserID() != -1)
                     sharedPref.setProfileUpdated();
                 startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                 finish();
@@ -154,15 +132,15 @@ public class UserProfile extends AppCompatActivity {
 
     private void saveUserInformation(){
         String nome_text = nome_layout.getEditText().getText().toString().trim();
-        user = mAuth.getCurrentUser();
         if(nome_text.isEmpty()){
             //se viene modificato il nome precedente, o non è mai esistito, allora compare l'errore
             nome_layout.setError("Il nome è richiesto.");
             nome_layout.requestFocus();
             return;
         }
-        if(user != null && localProfileImg != null){
-            //aggiornamento sia della foto che del nome, se non viene cambiato il nome non cambia nulla!
+        if(currentUser.getUserID() != -1 && localProfileImg != null){
+            //TODO aggiornamento sia della foto che del nome, se non viene cambiato il nome non cambia nulla!
+            /*
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(nome_text).setPhotoUri(Uri.parse(localProfileImg)).build();
             user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -176,28 +154,37 @@ public class UserProfile extends AppCompatActivity {
                     }
                 }
             });
+            */
         }
         else{
             //Caso se si vuole aggiornare solo il nome
-            if(user == null)
+            if(currentUser.getUserID() == -1)
                 return;
-            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(nome_text).setPhotoUri(user.getPhotoUrl()).build();
-            user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+            Call<LoginResponse> call = RetrofitClient.getInstance().getApi().updateUser(currentUser.getUserID(), nome_text, currentUser.getProfile_pic());
+            call.enqueue(new Callback<LoginResponse>() {
                 @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if(!response.body().isError()){
+                        sharedPref.setCurrentUser(response.body().getUser());
                         Toast.makeText(getApplicationContext(), "Nome aggiornato!", Toast.LENGTH_SHORT).show();
                         goHomeResumeState();
-                    }else{
-                        if(!task.isSuccessful())
-                            Toast.makeText(getApplicationContext(), "Errore aggiornamento nome utente.", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Errore aggiornamento nome utente.", Toast.LENGTH_SHORT).show();
                     }
+                }
+
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
     private void uploadToFirebaseStorage(){
+        //TODO upload immagini a server con retrofit
+        /*
         profileImgRef = FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis()+".jpg");
         if(localProfileImg != null){
             Toast.makeText(getApplicationContext(), "Upload immagine in corso...", Toast.LENGTH_LONG).show();
@@ -225,6 +212,7 @@ public class UserProfile extends AppCompatActivity {
                 }
             });
         }
+        */
     }
 
     @Override
@@ -242,7 +230,7 @@ public class UserProfile extends AppCompatActivity {
             }
         }else {
             imgProgressBar.setVisibility(View.INVISIBLE);
-            Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString()).into(userPic);
+            Glide.with(getApplicationContext()).load(currentUser.getProfile_pic()).into(userPic);
             saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
             saveBtn.setEnabled(true);
             done();

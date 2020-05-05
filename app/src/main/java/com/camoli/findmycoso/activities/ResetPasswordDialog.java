@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,14 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
+import com.camoli.findmycoso.R;
 
 public class ResetPasswordDialog extends AppCompatDialogFragment {
 
     private EditText emailText;
-    private FirebaseAuth mAuth;
     private Button abort, send;
 
     @NonNull
@@ -33,7 +30,6 @@ public class ResetPasswordDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.layout_dialog, null);
 
         emailText = view.findViewById(R.id.email_password_reset);
-        mAuth = FirebaseAuth.getInstance();
         abort = view.findViewById(R.id.abort);
         send = view.findViewById(R.id.send);
 
@@ -49,16 +45,14 @@ public class ResetPasswordDialog extends AppCompatDialogFragment {
             public void onClick(View v) {
                 String email = emailText.getText().toString().trim();
                 if(!email.equals("")){
-                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
-                                Toast.makeText(getActivity().getApplicationContext(), "Mail di reset password inviata.", Toast.LENGTH_LONG).show();
-                            else
-                                Toast.makeText(getActivity().getApplicationContext(), "Errore, controlla connessione e mail.", Toast.LENGTH_LONG).show();
-                            dismiss();
-                        }
-                    });
+                    //TODO Invio mail di convalida
+                    /*
+                    if(task.isSuccessful())
+                        Toast.makeText(getActivity().getApplicationContext(), "Mail di reset password inviata.", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(getActivity().getApplicationContext(), "Errore, controlla connessione e mail.", Toast.LENGTH_LONG).show();
+                    dismiss();
+                    */
                 }
             }
         });

@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.models;
 
 import android.content.Context;
 import android.graphics.Bitmap;

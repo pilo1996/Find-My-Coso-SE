@@ -1,8 +1,6 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,27 +9,27 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DefaultResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Device;
+import com.camoli.findmycoso.models.SharedPref;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -42,8 +40,6 @@ public class DeviceList extends ArrayAdapter<Device> {
     private int resource;
     private SharedPref sharedPref;
     private List<RadioButton> radioButtonsList;
-    DatabaseReference ref;
-    Query idQueryQR, idQueryReg;
 
     //bisogna sempre passargli in resoruce R.layout.select_device_sheet_dialogue
     public DeviceList(@NonNull Activity context, int resource, @NonNull List<Device> objects) {
@@ -64,12 +60,14 @@ public class DeviceList extends ArrayAdapter<Device> {
         if(position < devices.size()){
             final Device device = devices.get(position);
 
-            if(device.getId().equals("error"))
+            if(device.getId() == -1)
                 return listViewDevices;
 
+            /*
             ref = FirebaseDatabase.getInstance().getReference("users");
             idQueryQR = ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favorites").orderByChild("id").equalTo(device.getId());
             idQueryReg = ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("id").equalTo(device.getId());
+            */
 
             final LinearLayout thisDevice = listViewDevices.findViewById(R.id.thisDevice);
 
@@ -78,7 +76,7 @@ public class DeviceList extends ArrayAdapter<Device> {
             final ImageButton deleteSingleDevice = listViewDevices.findViewById(R.id.delete_single_device);
 
             final RadioButton radioButton = listViewDevices.findViewById(R.id.radioButton_selected);
-            if(sharedPref.getSelectedDevice().getId().equals(device.getId())){
+            if(sharedPref.getSelectedDevice().getId() == device.getId()){
                 radioButton.setChecked(true);
             }
 
@@ -87,33 +85,31 @@ public class DeviceList extends ArrayAdapter<Device> {
             textView = listViewDevices.findViewById(R.id.deviceInfo);
             textView.setText(device.getId());
 
-            if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(device.getOwnerID())){
+            if(sharedPref.getCurrentUser().getUserID() != device.getOwnerID()){
                 textView = listViewDevices.findViewById(R.id.isYourDevice);
                 textView.setText(R.string.dispositivo_aggiunto_da_qr);
                 deleteSingleDevice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        idQueryQR.addListenerForSingleValueEvent(new ValueEventListener() {
+                        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().removeBookmarkedDevice(device.getId(), sharedPref.getCurrentUser().getUserID());
+                        call.enqueue(new Callback<DefaultResponse>() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot device: dataSnapshot.getChildren()) {
-                                    device.getRef().removeValue();
+                            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                                if(!response.body().isError()){
+                                    notifyDataSetChanged();
                                 }
                             }
 
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.e(TAG, "onCancelled", databaseError.toException());
+                            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                                System.out.println(t.getMessage());
                             }
                         });
-
-                        notifyDataSetChanged();
                     }
                 });
-                if(sharedPref.getSelectedDevice().getId().equals(device.getId())){
+                if(sharedPref.getCurrentUser().getSelectedDeviceID() == device.getId()){
                     //avevamo selezionato quello appena eliminato
-                    if(sharedPref.getThisDevice().getId().equals("error"))
+                    if(sharedPref.getThisDevice().getId() == -1)
                         sharedPref.setSelectedDevice(new Device()); //non esiste nemmeno il mio attutale, butto in error
                     else
                         sharedPref.setSelectedDevice(sharedPref.getThisDevice()); //seleziono quello attuale
@@ -124,26 +120,25 @@ public class DeviceList extends ArrayAdapter<Device> {
                 deleteSingleDevice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        idQueryReg.addListenerForSingleValueEvent(new ValueEventListener() {
+                        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().removeDeviceRegistered(device.getId());
+                        call.enqueue(new Callback<DefaultResponse>() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot device: dataSnapshot.getChildren()) {
-                                    device.getRef().removeValue();
+                            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                                if(!response.body().isError()){
+                                    notifyDataSetChanged();
                                 }
                             }
 
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.e(TAG, "onCancelled", databaseError.toException());
+                            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                                System.out.println(t.getMessage());
                             }
                         });
-                        notifyDataSetChanged();
                     }
                 });
-                if(device.getName().equals(sharedPref.getThisDevice().getName()) && device.getId().equals(sharedPref.getThisDevice().getId())){
+                if(device.getId() == sharedPref.getThisDevice().getId()){
                     //se è il dispositivo corrente ad esser stato eliminato
-                    if(sharedPref.getSelectedDevice().getId().equals("error"))
+                    if(sharedPref.getSelectedDevice().getId() == -1)
                         sharedPref.setThisDevice(new Device()); //setto in error
                     //altrimento lascio quello che c'è già
                 }

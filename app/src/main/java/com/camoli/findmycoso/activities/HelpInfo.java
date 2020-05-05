@@ -1,7 +1,6 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -12,7 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toolbar;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 
 import java.lang.reflect.Method;
 
@@ -44,7 +45,7 @@ public class HelpInfo extends FragmentActivity {
                 finish();
                 break;
             case R.id.esci:
-                FirebaseAuth.getInstance().signOut();
+                sharedpref.setCurrentUser(new User(-1));
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;

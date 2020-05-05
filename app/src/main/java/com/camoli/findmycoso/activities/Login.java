@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -10,7 +10,6 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,18 +20,22 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Device;
+import com.camoli.findmycoso.api.LoginResponse;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Login extends AppCompatActivity {
 
@@ -73,7 +76,6 @@ public class Login extends AppCompatActivity {
     private View background;
     private Intent i;
     private SharedPref sharedPref;
-    private FirebaseAuth mAuth;
     private ProgressBar progressBar;
 
     @Override
@@ -97,8 +99,6 @@ public class Login extends AppCompatActivity {
         resetPassword = findViewById(R.id.reset_password);
         layoutInputEmail = findViewById(R.id.email_input_layout);
         layoutInputPassword = findViewById(R.id.password_input_layout);
-
-        mAuth = FirebaseAuth.getInstance();
 
         if (savedInstanceState == null){
             background.setVisibility(View.INVISIBLE);
@@ -147,15 +147,15 @@ public class Login extends AppCompatActivity {
                 login.setText("");
                 login.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
+                Call<LoginResponse> call = RetrofitClient.getInstance().getApi().userlogin(email, password);
+                call.enqueue(new Callback<LoginResponse>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            if(mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName().equals(""))
-                                Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
-                            if(mAuth.getCurrentUser().isEmailVerified()){
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        if(!response.body().isError()){
+                            User currentUser = sharedPref.getCurrentUser();
+                            Toast.makeText(getApplicationContext(), "Bentornato, "+currentUser.getNome()+"!", Toast.LENGTH_SHORT).show();
+                            if(currentUser.getValidated()){
                                 if(!sharedPref.isProfileUpdated()){
                                     startActivity(new Intent(getApplicationContext(), UserProfile.class));
                                     finish();
@@ -166,23 +166,22 @@ public class Login extends AppCompatActivity {
                                 }
                             }
                             else {
-                                mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        startActivity(new Intent(getApplicationContext(), EmailValidation.class));
-                                        finish();
-                                    }
-                                });
+                                //TODO send email verification
+                                startActivity(new Intent(getApplicationContext(), EmailValidation.class));
+                                finish();
                             }
-                        }
-                        else {
+                        }else{
                             progressBar.setVisibility(View.INVISIBLE);
                             login.setText(R.string.label_login);
                             login.setEnabled(true);
-                            layoutInputEmail.setError("Email o password invalidi.");
+                            layoutInputEmail.setError(response.body().getMessage());
                             layoutInputPassword.setError("Riprova.");
-                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -204,7 +203,6 @@ public class Login extends AppCompatActivity {
         ResetPasswordDialog reset = new ResetPasswordDialog();
         reset.show(getSupportFragmentManager(), "reset password dialog");
     }
-
 
     private TextWatcher loginTextWatcher = new TextWatcher() {
         @Override

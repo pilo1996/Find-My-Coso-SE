@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,13 +20,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DeviceListResponse;
+import com.camoli.findmycoso.api.PositionListResponse;
+import com.camoli.findmycoso.api.PositionResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Device;
+import com.camoli.findmycoso.models.Position;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,12 +47,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -53,6 +54,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -90,8 +95,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.ACCESS_NETWORK_STATE,
     };
     private SharedPref sharedPref;
-    private DatabaseReference databaseReferenceLocations;
-    private DatabaseReference databaseReferenceDevices;
     private LatLng location;
     private List<Position> locationsList = new ArrayList<>();
     private List<Device> devicesList = new ArrayList<>();
@@ -99,7 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String selectedDeviceName;
     private ProgressBar progressBarDB;
     private List<Device> deviceFavoritesList = new ArrayList<>();
-    private DatabaseReference databaseReferenceFavoriteDevices;
     private DeviceBottomSheetSelector bottomSheetSelector;
     private Toolbar toolbar;
 
@@ -134,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(new Intent(this, HelpInfo.class));
                 break;
             case R.id.esci:
-                FirebaseAuth.getInstance().signOut();
+                sharedPref.setCurrentUser(new User(-1));
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;
@@ -176,68 +178,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void retriveDevices(){
         String temp;
-        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         //riceve dati per i dispositivi registrati nell'account
-        databaseReferenceDevices.addListenerForSingleValueEvent(new ValueEventListener() {
+        Call<DeviceListResponse> call = RetrofitClient.getInstance().getApi().getAllDevicesRegistered(sharedPref.getCurrentUser().getUserID());
+        call.enqueue(new Callback<DeviceListResponse>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                devicesList.clear();
-                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
-                    devicesList.add(dev.getValue(Device.class));
-                }
+            public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
+                if(!response.body().isError()){
+                    devicesList.clear();
+                    devicesList.addAll(response.body().getDeviceList());
+                }else
+                    System.out.println(response.body().getMessage());
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("Errore imprevisto nel scaricare i dati dei dispositivi registrati...");
-            }
-        });
-        temp = databaseReferenceDevices.push().getKey();
-        databaseReferenceDevices.child(temp).setValue(null);
-
-        databaseReferenceFavoriteDevices = FirebaseDatabase.getInstance().getReference("/users/"+
-                FirebaseAuth.getInstance().getCurrentUser().getUid()+"/favorites/");
-        databaseReferenceFavoriteDevices.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                deviceFavoritesList.clear();
-                for (DataSnapshot dev : dataSnapshot.getChildren() ) {
-                    System.out.println(dev.getValue().toString());
-                    deviceFavoritesList.add(dev.getValue(Device.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onFailure(Call<DeviceListResponse> call, Throwable t) {
+                System.out.println(t.getMessage());
             }
         });
-        temp = databaseReferenceFavoriteDevices.push().getKey();
-        databaseReferenceFavoriteDevices.child(temp).setValue(null);
+
+        call = RetrofitClient.getInstance().getApi().getAllDevicesBookmarked(sharedPref.getCurrentUser().getUserID());
+        call.enqueue(new Callback<DeviceListResponse>() {
+            @Override
+            public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
+                if(!response.body().isError()){
+                    deviceFavoritesList.clear();
+                    deviceFavoritesList.addAll(response.body().getDeviceList());
+                }else
+                    System.out.println(response.body().getMessage());
+            }
+
+            @Override
+            public void onFailure(Call<DeviceListResponse> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
     }
 
     private void retriveLocations(){
-        String temp;
-
-        databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
-        //riceve dati per le posizioni del dispositivo associato all'account
-
-        databaseReferenceLocations.addValueEventListener(new ValueEventListener() {
+        Call<PositionListResponse> call = RetrofitClient.getInstance().getApi().getAllPositionsFromDeviceID(sharedPref.getSelectedDevice().getOwnerID(), sharedPref.getSelectedDevice().getId());
+        call.enqueue(new Callback<PositionListResponse>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                locationsList.clear();
-                for (DataSnapshot pos : dataSnapshot.getChildren() ) {
-                    locationsList.add(pos.getValue(Position.class));
+            public void onResponse(Call<PositionListResponse> call, Response<PositionListResponse> response) {
+                if(!response.body().isError()){
+                    locationsList.clear();
+                    locationsList.addAll(response.body().getPositionList());
                 }
+                else
+                    System.out.println(response.body().getMessage());
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("Errore imprevisto nel scaricare i dati delle ultime posizioni...");
+            public void onFailure(Call<PositionListResponse> call, Throwable t) {
+                System.out.println(t.getMessage());
             }
         });
-        temp = databaseReferenceLocations.push().getKey();
-        databaseReferenceLocations.child(temp).setValue(null);
     }
 
     @Override
@@ -258,11 +254,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     deviceName.setText(R.string.registra_il_dispositivo);
 
                 if(!deviceName.getText().equals(R.string.registra_il_dispositivo)){
-                    if(sharedPref.getSelectedDevice().getId().equals("error")){
+                    if(sharedPref.getSelectedDevice().getId() == -1){
                         sharedPref.setSelectedDevice(sharedPref.getThisDevice());
                     }
                     selectedDeviceName = sharedPref.getSelectedDevice().getName();
-                    databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
                     deviceName.setText(selectedDeviceName);
                 }
                 LottieAnimationView lottieAnimationView = findViewById(R.id.geo_loading);
@@ -296,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         progressBarDB = findViewById(R.id.progressBarDB);
         fabHistory = findViewById(R.id.historyPositions);
 
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+        if(sharedPref.getCurrentUser().getUserID() == -1){
             startActivity(new Intent(this, Login.class));
             finish();
         }
@@ -309,8 +304,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stampaDevice(sharedPref.getThisDevice());
         */
 
-        databaseReferenceDevices = FirebaseDatabase.getInstance().getReference("/users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         if(!findThisDevice())
             deviceName.setText(R.string.registra_il_dispositivo);
         /*
@@ -321,11 +314,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stampaDevice(sharedPref.getThisDevice());
         */
         if(!deviceName.getText().equals(R.string.registra_il_dispositivo)){
-            if(sharedPref.getSelectedDevice().getId().equals("error")){
+            if(sharedPref.getSelectedDevice().getId() == -1){
                 sharedPref.setSelectedDevice(sharedPref.getThisDevice());
             }
             selectedDeviceName = sharedPref.getSelectedDevice().getName();
-            databaseReferenceLocations = FirebaseDatabase.getInstance().getReference("/locations/"+sharedPref.getSelectedDevice().getId());
             deviceName.setText(selectedDeviceName);
         }
         /*
@@ -352,7 +344,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fabHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(sharedPref.getThisDevice().getId().equals("error") || deviceName.getText().equals(R.string.registra_il_dispositivo)){
+                if(sharedPref.getThisDevice().getId() == -1 || deviceName.getText().equals(R.string.registra_il_dispositivo)){
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
@@ -397,10 +389,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private boolean findThisDevice() {
-        System.out.println("entra in find this device, ritorna: "+sharedPref.getThisDevice().getId().equals("error"));
-        if(sharedPref.getThisDevice().getId().equals("error")){
+        if(sharedPref.getThisDevice().getId() == -1){
             for (Device d : devicesList){
-                if(getDeviceName().equals(d.getName())){
+                if(getDeviceName().equals(d.getName()) && sharedPref.getCurrentUser().getUserID() == d.getOwnerID()){
                     sharedPref.setThisDevice(d);
                     return true;
                 }
@@ -454,7 +445,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-        if(!sharedPref.getThisDevice().getId().equals("error")){
+        if(sharedPref.getThisDevice().getId() != -1){
             Task<Location> task = fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
@@ -474,8 +465,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 resolveAddress(location.latitude, location.longitude),
                                 resolveDate(timestamp)
                         );
-                        databaseReferenceLocations.child(position.getDayTime()).setValue(position);
-                        locationsList.add(position);
+                        Call<PositionResponse> call = RetrofitClient.getInstance().getApi().addPosition(
+                                position.getDeviceID(), position.getUserID(), position.getAddress(), Double.parseDouble(position.getLatitude()),
+                                Double.parseDouble(position.getLongitude()), position.getDayTime(), position.getDateTime() );
+                        call.enqueue(new Callback<PositionResponse>() {
+                            @Override
+                            public void onResponse(Call<PositionResponse> call, Response<PositionResponse> response) {
+                                if (!response.body().isError())
+                                    locationsList.add(response.body().getPosition());
+                                else
+                                    System.out.println(response.body().getMessage());
+                            }
+
+                            @Override
+                            public void onFailure(Call<PositionResponse> call, Throwable t) {
+                                System.out.println(t.getMessage());
+                            }
+                        });
+
                     }
                 }
             });

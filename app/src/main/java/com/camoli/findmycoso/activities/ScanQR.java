@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,19 +14,22 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DefaultResponse;
+import com.camoli.findmycoso.api.DeviceListResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.models.Device;
+import com.camoli.findmycoso.models.SharedPref;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.Result;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ScanQR extends AppCompatActivity {
 
@@ -63,7 +66,7 @@ public class ScanQR extends AppCompatActivity {
                         scannerView.setFrameColor(Color.parseColor("#2fd339"));
                         components = result.getText().split("\\;");
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        processDialog(components[0], components[1], components[2], components[3], components[4]);
+                        processDialog(components[0], components[1], Integer.parseInt(components[2]), components[3], Integer.parseInt(components[4]));
                     }
                 });
             }
@@ -89,7 +92,7 @@ public class ScanQR extends AppCompatActivity {
         super.onPause();
     }
 
-    private void processDialog(final String uuid, final String name, final String ID, final String email, final String ownerID){
+    private void processDialog(final String uuid, final String deviceName, final int deviceID, final String ownerEmail, final int ownerID){
         final List<Device> dbDevices = new ArrayList<>();
         final LinearLayout theDevice = findViewById(R.id.theDevice);
         theDevice.setVisibility(View.VISIBLE);
@@ -97,14 +100,13 @@ public class ScanQR extends AppCompatActivity {
         final TextView favoriteLabel = findViewById(R.id.addFavoriteLabel);
         final ImageView favoriteIcon = findViewById(R.id.favoriteIcon);
         final FloatingActionButton closeButton = findViewById(R.id.chiudi);
-        final DatabaseReference favoriteDBR = FirebaseDatabase.getInstance().getReference("/users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/favorites/");;
 
         TextView textView = findViewById(R.id.deviceName);
-        textView.setText(name);
+        textView.setText(deviceName);
         textView = findViewById(R.id.deviceID);
-        textView.setText(ID);
+        textView.setText(deviceID);
         textView = findViewById(R.id.emailOwner);
-        textView.setText(email);
+        textView.setText(ownerEmail);
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +115,7 @@ public class ScanQR extends AppCompatActivity {
             }
         });
 
-        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(ownerID)){
+        if(sharedPref.getCurrentUser().getUserID() == ownerID){
             favoriteLabel.setText(R.string.gia_salvato);
             favoriteIcon.setImageResource(R.drawable.ic_check_);
             favoriteLabel.setTextColor(Color.parseColor("#303030"));
@@ -121,22 +123,25 @@ public class ScanQR extends AppCompatActivity {
         }
         else {
             final boolean[] trovato = {false};
-            favoriteDBR.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            Call<DeviceListResponse> call = RetrofitClient.getInstance().getApi().getAllDevicesBookmarked(sharedPref.getCurrentUser().getUserID());
+            call.enqueue(new Callback<DeviceListResponse>() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    dbDevices.clear();
-                    for (DataSnapshot id : dataSnapshot.getChildren()){
-                        dbDevices.add(id.getValue(Device.class));
-                    }
-                    for (Device d : dbDevices){
-                        if(d.getId().equals(ID))
-                            trovato[0] = true;
-                    }
+                public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
+                    if(!response.body().isError()){
+                        dbDevices.clear();
+                        dbDevices.addAll(response.body().getDeviceList());
+                        for (Device dev : dbDevices){
+                            if(dev.getId() == deviceID)
+                                trovato[0] = true;
+                        }
+                    }else
+                        System.out.println(response.body().getMessage());
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                public void onFailure(Call<DeviceListResponse> call, Throwable t) {
+                    System.out.println(t.getMessage());
                 }
             });
 
@@ -152,15 +157,29 @@ public class ScanQR extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(favoriteButton.isEnabled()){
-                    favoriteDBR.child(ID).setValue(new Device(uuid, name, ID, email, ownerID));
-                    //favoriteIcon.setImageResource(R.drawable.ic_favorite_full);
-                    favoriteIcon.setVisibility(View.GONE);
-                    LottieAnimationView heart = findViewById(R.id.heart_animation);
-                    heart.setVisibility(View.VISIBLE);
-                    heart.playAnimation();
-                    favoriteLabel.setText(R.string.salvato);
-                    favoriteLabel.setTextColor(Color.parseColor("#303030"));
-                    favoriteLabel.setEnabled(false);
+                    Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().bookmarkDevice(sharedPref.getCurrentUser().getUserID(), deviceID);
+                    call.enqueue(new Callback<DefaultResponse>() {
+                        @Override
+                        public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                            if(!response.body().isError()){
+                                //favoriteIcon.setImageResource(R.drawable.ic_favorite_full);
+                                favoriteIcon.setVisibility(View.GONE);
+                                LottieAnimationView heart = findViewById(R.id.heart_animation);
+                                heart.setVisibility(View.VISIBLE);
+                                heart.playAnimation();
+                                favoriteLabel.setText(R.string.salvato);
+                                favoriteLabel.setTextColor(Color.parseColor("#303030"));
+                                favoriteLabel.setEnabled(false);
+                            }
+                            else
+                                favoriteLabel.setText(response.body().getMessage());
+                        }
+
+                        @Override
+                        public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                            System.out.println(t.getMessage());
+                        }
+                    });
                 }
             }
         });

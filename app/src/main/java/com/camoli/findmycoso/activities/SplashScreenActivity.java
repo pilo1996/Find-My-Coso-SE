@@ -1,51 +1,46 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.activities;
 
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.RetrofitClient;
+import com.camoli.findmycoso.api.LoginResponse;
+import com.camoli.findmycoso.models.SharedPref;
+import com.camoli.findmycoso.models.User;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static final long SPLASH_TIME_OUT = 2500;
     private ImageView cfLogo;
     SharedPref sharedpref;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseApp.initializeApp(getApplicationContext());
         setTheme(R.style.DarkModeFull);
         super.onCreate(savedInstanceState);
         View decorView = getWindow().getDecorView();
@@ -68,7 +63,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
 
         sharedpref = new SharedPref(this);
-        mAuth = FirebaseAuth.getInstance();
 
         startAnimation(this);
         new Handler().postDelayed(new Runnable() {
@@ -79,28 +73,43 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
-                    if(currentUser != null){
-                        if(mAuth.getCurrentUser().getDisplayName() == null || mAuth.getCurrentUser().getDisplayName().equals("")){
-                            Toast.makeText(getApplicationContext(), "Accesso eseguito come\n"+mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(), "Bentornato, "+mAuth.getCurrentUser().getDisplayName()+"!", Toast.LENGTH_SHORT).show();
-                        }
-                        if(mAuth.getCurrentUser().isEmailVerified()){
-                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                            finish();
-                        }
-                        else {
-                            mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    startActivity(new Intent(getApplicationContext(), EmailValidation.class));
+                    final User currentUser = sharedpref.getCurrentUser();
+                    if(currentUser.getUserID() != -1){
+                        //l'utente è salvato, ha fatto un accesso correttamente e non ha mai fatto logout
+                        Call<LoginResponse> call = RetrofitClient.getInstance().getApi().userlogin(currentUser.getEmail(), currentUser.getPlainPassword());
+                        call.enqueue(new Callback<LoginResponse>() {
+                            @Override
+                            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                                if(!response.body().isError()){
+                                    sharedpref.setCurrentUser(response.body().getUser());
+                                    Toast.makeText(getApplicationContext(), "Bentornato, "+currentUser.getNome()+"!", Toast.LENGTH_SHORT).show();
+                                    if(currentUser.getValidated()){
+                                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                        finish();
+                                    }
+                                    else {
+                                        //TODO send email verification
+                                        startActivity(new Intent(getApplicationContext(), EmailValidation.class));
+                                        finish();
+                                    }
+                                }else{
+                                    sharedpref.setCurrentUser(new User(-1));
+                                    startActivity(new Intent(SplashScreenActivity.this, Login.class));
                                     finish();
                                 }
-                            });
-                        }
+                            }
+
+                            @Override
+                            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                sharedpref.setCurrentUser(new User(-1));
+                                startActivity(new Intent(SplashScreenActivity.this, Login.class));
+                                finish();
+                            }
+                        });
+
                     }else {
+                        //l'utente non è salvato: non ha mai acceduto o ha fatto logout
                         startActivity(new Intent(SplashScreenActivity.this, Login.class));
                         finish();
                     }
