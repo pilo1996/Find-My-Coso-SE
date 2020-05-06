@@ -11,7 +11,7 @@ public class PositionListResponse {
     private List<Position> positions;
     private boolean error;
 
-    public PositionListResponse(String message, List<Position> positions, boolean error) {
+    public PositionListResponse(boolean error, String message, List<Position> positions) {
         this.message = message;
         this.positions = positions;
         this.error = error;

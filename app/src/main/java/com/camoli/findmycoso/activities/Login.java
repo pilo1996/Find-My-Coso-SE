@@ -153,9 +153,15 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if(!response.body().isError()){
-                            User currentUser = sharedPref.getCurrentUser();
-                            Toast.makeText(getApplicationContext(), "Bentornato, "+currentUser.getNome()+"!", Toast.LENGTH_SHORT).show();
-                            if(currentUser.getValidated()){
+                            sharedPref.savePlainPassword(password);
+                            sharedPref.setCurrentUser(response.body().getUser());
+                            Toast.makeText(getApplicationContext(), "Bentornato, "+sharedPref.getCurrentUser().getNome()+"!", Toast.LENGTH_SHORT).show();
+
+                            System.out.println(sharedPref.getCurrentUser().getValidated());
+                            System.out.println(sharedPref.getCurrentUser().getEmail());
+                            System.out.println(sharedPref.getCurrentUser().getUserID());
+
+                            if(sharedPref.getCurrentUser().getValidated() == 1){
                                 if(!sharedPref.isProfileUpdated()){
                                     startActivity(new Intent(getApplicationContext(), UserProfile.class));
                                     finish();

@@ -7,10 +7,10 @@ public class User {
     private String email;
     private String plainPassword;
     private String profile_pic;
-    private Boolean isValidated;
+    private int isValidated;
     private int selectedDeviceID;
 
-    public User(int userID, String nome, String email, String plainPassword, String profile_pic, Boolean isValidated, int selectedDeviceID) {
+    public User(int userID, String nome, String email, String plainPassword, String profile_pic, int isValidated, int selectedDeviceID) {
         this.userID = userID;
         this.nome = nome;
         this.email = email;
@@ -33,7 +33,7 @@ public class User {
         this.email = "error";
         this.plainPassword = "error";
         this.profile_pic = "error";
-        this.isValidated = false;
+        this.isValidated = 0;
         this.selectedDeviceID = -1;
     }
 
@@ -77,11 +77,11 @@ public class User {
         this.profile_pic = profile_pic;
     }
 
-    public Boolean getValidated() {
+    public int getValidated() {
         return isValidated;
     }
 
-    public void setValidated(Boolean validated) {
+    public void setValidated(int validated) {
         isValidated = validated;
     }
 

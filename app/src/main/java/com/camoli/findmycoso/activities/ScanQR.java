@@ -93,7 +93,7 @@ public class ScanQR extends AppCompatActivity {
     }
 
     private void processDialog(final String uuid, final String deviceName, final int deviceID, final String ownerEmail, final int ownerID){
-        final List<Device> dbDevices = new ArrayList<>();
+        final List<Device>[] dbDevices = new List[]{new ArrayList<>()};
         final LinearLayout theDevice = findViewById(R.id.theDevice);
         theDevice.setVisibility(View.VISIBLE);
         final LinearLayout favoriteButton = findViewById(R.id.addFavoriteButton);
@@ -104,7 +104,7 @@ public class ScanQR extends AppCompatActivity {
         TextView textView = findViewById(R.id.deviceName);
         textView.setText(deviceName);
         textView = findViewById(R.id.deviceID);
-        textView.setText(deviceID);
+        textView.setText(deviceID+"");
         textView = findViewById(R.id.emailOwner);
         textView.setText(ownerEmail);
 
@@ -129,9 +129,8 @@ public class ScanQR extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
                     if(!response.body().isError()){
-                        dbDevices.clear();
-                        dbDevices.addAll(response.body().getDeviceList());
-                        for (Device dev : dbDevices){
+                        dbDevices[0] = response.body().getDeviceList();
+                        for (Device dev : dbDevices[0]){
                             if(dev.getId() == deviceID)
                                 trovato[0] = true;
                         }
@@ -161,6 +160,7 @@ public class ScanQR extends AppCompatActivity {
                     call.enqueue(new Callback<DefaultResponse>() {
                         @Override
                         public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                            System.out.println(response.code());
                             if(!response.body().isError()){
                                 //favoriteIcon.setImageResource(R.drawable.ic_favorite_full);
                                 favoriteIcon.setVisibility(View.GONE);

@@ -123,11 +123,12 @@ public class Signup extends AppCompatActivity {
                 confirmSignup.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
 
-                Call<ResponseBody> call = RetrofitClient.getInstance().getApi().createUser(email, password, email.substring(0, email.indexOf("@")-1));
+                Call<ResponseBody> call = RetrofitClient.getInstance().getApi().createUser(email, email.substring(0, email.indexOf("@")), password);
 
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        System.out.println(response.code());
                         switch (response.code()){
                             case 201: //registrazione andata a buon fine
                                 Toast.makeText(getApplicationContext(), "Registrato con successo!", Toast.LENGTH_SHORT).show();

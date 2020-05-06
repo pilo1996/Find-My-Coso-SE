@@ -64,8 +64,11 @@ public class PositionBottomSheetDialog extends BottomSheetDialogFragment {
                 call.enqueue(new Callback<DefaultResponse>() {
                     @Override
                     public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
-                        if(!response.body().isError())
+                        System.out.println(response.code());
+                        if(!response.body().isError()){
+                            positionList.clear();
                             dismiss();
+                        }
                         else
                             System.out.println(response.body().getMessage());
                     }

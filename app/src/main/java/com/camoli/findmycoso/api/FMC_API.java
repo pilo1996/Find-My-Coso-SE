@@ -3,6 +3,8 @@ package com.camoli.findmycoso.api;
 import com.camoli.findmycoso.activities.DeviceList;
 import com.camoli.findmycoso.models.Position;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -34,6 +36,13 @@ public interface FMC_API {
             @Field("profile_pic") String profile_pic
     );
 
+    @Multipart
+    @POST("uploadProfilePic")
+    Call<UploadResponse> uploadProfilePic(
+        @Part("image") MultipartBody.Part img,
+        @Part("userID") RequestBody userID
+    );
+
     @FormUrlEncoded
     @PUT("updateSelectedDevice")
     Call<DefaultResponse> updateSelectedDevice(
@@ -48,11 +57,11 @@ public interface FMC_API {
     Call<PositionResponse> addPosition(
             @Field("device_fk") int device_fk,
             @Field("user_fk") int user_fk,
-            @Field("device_fk") String via,
-            @Field("device_fk") double latitudine,
-            @Field("device_fk") double longitudine,
-            @Field("device_fk") String dayTime,
-            @Field("device_fk") String dateTime
+            @Field("via") String via,
+            @Field("latitudine") String latitudine,
+            @Field("longitudine") String longitudine,
+            @Field("dayTime") String dayTime,
+            @Field("dateTime") String dateTime
     );
 
 
@@ -68,10 +77,11 @@ public interface FMC_API {
             @Path("locationID") int locationID
     );
 
-    @DELETE("deleteAllPositionsByDevice/{deviceID, userID}")
+    @FormUrlEncoded
+    @POST("deleteAllPositionsByDevice")
     Call<DefaultResponse> deleteAllPositionsByDevice(
-            @Path("deviceID") int deviceID,
-            @Path("userID") int userID
+            @Field("deviceid") int deviceID,
+            @Field("userid") int userID
     );
 
     /*********************************** DEVICES ***********************************/
@@ -91,14 +101,14 @@ public interface FMC_API {
             @Field("deviceID") int deviceID
     );
 
-    @FormUrlEncoded
-    @POST("getAllDevicesRegistered/{userID}")
+    //@FormUrlEncoded
+    @GET("getAllDevicesRegistered/{userID}")
     Call<DeviceListResponse> getAllDevicesRegistered(
             @Path("userID") int userID
     );
 
-    @FormUrlEncoded
-    @POST("getAllDevicesBookmarked/{userID}")
+    //@FormUrlEncoded
+    @GET("getAllDevicesBookmarked/{userID}")
     Call<DeviceListResponse> getAllDevicesBookmarked(
             @Path("userID") int userID
     );

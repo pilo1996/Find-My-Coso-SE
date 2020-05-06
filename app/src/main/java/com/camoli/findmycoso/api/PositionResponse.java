@@ -9,7 +9,7 @@ public class PositionResponse {
     private Position position;
     private boolean error;
 
-    public PositionResponse(String message, Position position, boolean error) {
+    public PositionResponse(boolean error, String message, Position position) {
         this.message = message;
         this.position = position;
         this.error = error;

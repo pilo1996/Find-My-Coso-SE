@@ -63,12 +63,6 @@ public class DeviceList extends ArrayAdapter<Device> {
             if(device.getId() == -1)
                 return listViewDevices;
 
-            /*
-            ref = FirebaseDatabase.getInstance().getReference("users");
-            idQueryQR = ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favorites").orderByChild("id").equalTo(device.getId());
-            idQueryReg = ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("id").equalTo(device.getId());
-            */
-
             final LinearLayout thisDevice = listViewDevices.findViewById(R.id.thisDevice);
 
             listViewDevices.findViewById(R.id.thisDeviceEntire).setVisibility(View.VISIBLE);
@@ -83,7 +77,7 @@ public class DeviceList extends ArrayAdapter<Device> {
             TextView textView = listViewDevices.findViewById(R.id.deviceName);
             textView.setText(device.getName());
             textView = listViewDevices.findViewById(R.id.deviceInfo);
-            textView.setText(device.getId());
+            textView.setText(device.getEmail());
 
             if(sharedPref.getCurrentUser().getUserID() != device.getOwnerID()){
                 textView = listViewDevices.findViewById(R.id.isYourDevice);

@@ -35,7 +35,7 @@ import retrofit2.Response;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    private static final long SPLASH_TIME_OUT = 2500;
+    private static final long SPLASH_TIME_OUT = 3500;
     private ImageView cfLogo;
     SharedPref sharedpref;
 
@@ -73,17 +73,17 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    final User currentUser = sharedpref.getCurrentUser();
-                    if(currentUser.getUserID() != -1){
+                    System.out.println("Current UserID: "+sharedpref.getCurrentUser().getUserID());
+                    if(sharedpref.getCurrentUser().getUserID() != -1 && !sharedpref.getPlainPassword().equals("error")){
                         //l'utente è salvato, ha fatto un accesso correttamente e non ha mai fatto logout
-                        Call<LoginResponse> call = RetrofitClient.getInstance().getApi().userlogin(currentUser.getEmail(), currentUser.getPlainPassword());
+                        Call<LoginResponse> call = RetrofitClient.getInstance().getApi().userlogin(sharedpref.getCurrentUser().getEmail(), sharedpref.getPlainPassword());
                         call.enqueue(new Callback<LoginResponse>() {
                             @Override
                             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                                if(!response.body().isError()){
+                                if(call.isExecuted()  && response.isSuccessful() && !response.body().isError()){
                                     sharedpref.setCurrentUser(response.body().getUser());
-                                    Toast.makeText(getApplicationContext(), "Bentornato, "+currentUser.getNome()+"!", Toast.LENGTH_SHORT).show();
-                                    if(currentUser.getValidated()){
+                                    Toast.makeText(getApplicationContext(), "Bentornato, "+sharedpref.getCurrentUser().getNome()+"!", Toast.LENGTH_SHORT).show();
+                                    if(sharedpref.getCurrentUser().getValidated() == 1){
                                         startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                                         finish();
                                     }
@@ -93,6 +93,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 }else{
+                                    System.out.println("Executed: "+call.isExecuted()+", Successful: "+ response.isSuccessful());
                                     sharedpref.setCurrentUser(new User(-1));
                                     startActivity(new Intent(SplashScreenActivity.this, Login.class));
                                     finish();
@@ -101,8 +102,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                sharedpref.setCurrentUser(new User(-1));
+                                System.out.println("FALLISCE: "+t.getMessage());
+                                if(sharedpref.getCurrentUser().getUserID() == -1)
+                                    sharedpref.setCurrentUser(new User(-1));
                                 startActivity(new Intent(SplashScreenActivity.this, Login.class));
                                 finish();
                             }

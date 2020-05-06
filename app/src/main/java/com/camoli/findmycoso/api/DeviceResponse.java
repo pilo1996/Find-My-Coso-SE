@@ -8,7 +8,7 @@ public class DeviceResponse {
     private Device device;
     private boolean error;
 
-    public DeviceResponse(String message, Device device, boolean error) {
+    public DeviceResponse(boolean error, String message, Device device) {
         this.message = message;
         this.device = device;
         this.error = error;

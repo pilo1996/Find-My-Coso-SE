@@ -115,10 +115,12 @@ public class RegistraDispositivo extends FragmentActivity {
         call.enqueue(new Callback<DeviceListResponse>() {
             @Override
             public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
-                if(!response.body().isError()){
-                    deviceList.addAll(response.body().getDeviceList());
-                }else
-                    System.out.println(response.body().getMessage());
+                if(call.isExecuted() && response.isSuccessful()) {
+                    if (!response.body().isError()) {
+                        deviceList.addAll(response.body().getDeviceList());
+                    } else
+                        System.out.println(response.body().getMessage());
+                }
             }
 
             @Override
@@ -209,13 +211,19 @@ public class RegistraDispositivo extends FragmentActivity {
                     call.enqueue(new Callback<DeviceResponse>() {
                         @Override
                         public void onResponse(Call<DeviceResponse> call, Response<DeviceResponse> response) {
-                            if(response.body().isError())
-                                showSnackBarCustom(response.body().getMessage(), "#ff0000");
-                            else {
-                                registrationStatus.setText("è");
-                                showSnackBarCustom("Dispositivo aggiunto al tuo account.", "#2fd339");
-                                device = response.body().getDevice();
-                            }
+                            //if(call.isExecuted() && response.isSuccessful()) {
+                                if(response.body().isError())
+                                    showSnackBarCustom(response.body().getMessage(), "#ff0000");
+                                else {
+                                    registrationStatus.setText("è");
+                                    showSnackBarCustom("Dispositivo aggiunto al tuo account.", "#2fd339");
+                                    device = response.body().getDevice();
+                                    sharedpref.setThisDevice(device);
+                                    sharedpref.setSelectedDevice(device);
+                                }
+                            /*}
+                            else
+                                showSnackBarCustom("Errore imprevisto.", "#ff0000");*/
                         }
 
                         @Override
@@ -223,8 +231,6 @@ public class RegistraDispositivo extends FragmentActivity {
                             showSnackBarCustom("Errore imprevisto.", "#ff0000");
                         }
                     });
-                    sharedpref.setThisDevice(device);
-                    sharedpref.setSelectedDevice(device);
                 }
                 waitingProgress.setVisibility(View.INVISIBLE);
             }

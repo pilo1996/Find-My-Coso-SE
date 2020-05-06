@@ -10,7 +10,7 @@ public class DeviceListResponse {
     private List<Device> devices;
     private boolean error;
 
-    public DeviceListResponse(String message, List<Device> devices, boolean error) {
+    public DeviceListResponse(boolean error, String message, List<Device> devices) {
         this.message = message;
         this.devices = devices;
         this.error = error;

@@ -27,7 +27,7 @@ public class SharedPref {
         String email = myPreferences.getString("userEmail", "error");
         String plainPassword = myPreferences.getString("userPassword", "error");
         String profile_pic = myPreferences.getString("userPic", "error");
-        Boolean isValidated = myPreferences.getBoolean("userValidated", false);
+        int isValidated = myPreferences.getInt("userValidated", 0);
         int selectedDeviceID = myPreferences.getInt("userSelectedDeviceID", -1);
         return new User(id, nome, email, plainPassword, profile_pic, isValidated, selectedDeviceID);
     }
@@ -35,13 +35,24 @@ public class SharedPref {
     public void setCurrentUser(User user){
         SharedPreferences.Editor editor = myPreferences.edit();
         editor.putInt("userID", user.getUserID());
+        System.out.println("****** CAMBIO USERID ***** -> "+user.getUserID());
         editor.putString("userName", user.getNome());
         editor.putString("userEmail", user.getEmail());
         editor.putString("userPassword", user.getPlainPassword());
         editor.putString("userPic", user.getProfile_pic());
-        editor.putBoolean("userValidated", user.getValidated());
+        editor.putInt("userValidated", user.getValidated());
         editor.putInt("userSelectedDeviceID", user.getSelectedDeviceID());
         editor.commit();
+    }
+
+    public void savePlainPassword(String password){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putString("userPlainPassword", password);
+        editor.commit();
+    }
+
+    public String getPlainPassword(){
+        return myPreferences.getString("userPlainPassword", "error");
     }
 
     public void setDarkModeState(Boolean state){
@@ -118,19 +129,21 @@ public class SharedPref {
         editor.putInt("selectedDevice-ownerDevice", selectedDevice.getOwnerID());
         editor.commit();
         int userID = myPreferences.getInt("userID", -1);
-        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().updateSelectedDevice(userID, selectedDevice.getId());
-        call.enqueue(new Callback<DefaultResponse>() {
-            @Override
-            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
-                if(response.body().isError())
-                    System.out.println(response.body().getMessage());
-            }
+        if(userID != -1){
+            Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().updateSelectedDevice(userID, selectedDevice.getId());
+            call.enqueue(new Callback<DefaultResponse>() {
+                @Override
+                public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                    if(response.body().isError())
+                        System.out.println(response.body().getMessage());
+                }
 
-            @Override
-            public void onFailure(Call<DefaultResponse> call, Throwable t) {
-                System.out.println(t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                    System.out.println(t.getMessage());
+                }
+            });
+        }
     }
 
     public Device getSelectedDevice(){

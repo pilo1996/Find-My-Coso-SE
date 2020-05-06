@@ -177,18 +177,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void retriveDevices(){
-        String temp;
-
+        //devicesList.clear();
         //riceve dati per i dispositivi registrati nell'account
         Call<DeviceListResponse> call = RetrofitClient.getInstance().getApi().getAllDevicesRegistered(sharedPref.getCurrentUser().getUserID());
         call.enqueue(new Callback<DeviceListResponse>() {
             @Override
             public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
-                if(!response.body().isError()){
-                    devicesList.clear();
-                    devicesList.addAll(response.body().getDeviceList());
-                }else
-                    System.out.println(response.body().getMessage());
+                devicesList = response.body().getDeviceList();
             }
 
             @Override
@@ -197,15 +192,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        //deviceFavoritesList.clear();
         call = RetrofitClient.getInstance().getApi().getAllDevicesBookmarked(sharedPref.getCurrentUser().getUserID());
         call.enqueue(new Callback<DeviceListResponse>() {
             @Override
             public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
-                if(!response.body().isError()){
-                    deviceFavoritesList.clear();
-                    deviceFavoritesList.addAll(response.body().getDeviceList());
-                }else
-                    System.out.println(response.body().getMessage());
+                deviceFavoritesList = response.body().getDeviceList();
             }
 
             @Override
@@ -216,17 +208,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void retriveLocations(){
+        //locationsList.clear();
         Call<PositionListResponse> call = RetrofitClient.getInstance().getApi().getAllPositionsFromDeviceID(sharedPref.getSelectedDevice().getOwnerID(), sharedPref.getSelectedDevice().getId());
         call.enqueue(new Callback<PositionListResponse>() {
             @Override
             public void onResponse(Call<PositionListResponse> call, Response<PositionListResponse> response) {
-                if(!response.body().isError()){
-                    locationsList.clear();
-                    locationsList.addAll(response.body().getPositionList());
-                }
-                else
-                    System.out.println(response.body().getMessage());
-
+                locationsList = response.body().getPositionList();
             }
 
             @Override
@@ -245,6 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setBuildingsEnabled(false);
         mMap.setMyLocationEnabled(true);
         fetchLastLocation();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -266,7 +254,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 deviceName.setVisibility(View.VISIBLE);
                 progressBarDB.setVisibility(View.INVISIBLE);
             }
-        }, 2000);
+        }, 700);
 
     }
 
@@ -362,7 +350,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(!devicesList.contains(d))
                         devicesList.add(d);
                 }
-                if(devicesList.size() == 0 || deviceName.getText().equals(R.string.registra_il_dispositivo)){
+                if(devicesList.isEmpty() || deviceName.getText().equals(R.string.registra_il_dispositivo)){
                     startActivity(new Intent(getApplicationContext(), RegistraDispositivo.class));
                 }
                 else {
@@ -390,6 +378,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private boolean findThisDevice() {
         if(sharedPref.getThisDevice().getId() == -1){
+            retriveDevices();
             for (Device d : devicesList){
                 if(getDeviceName().equals(d.getName()) && sharedPref.getCurrentUser().getUserID() == d.getOwnerID()){
                     sharedPref.setThisDevice(d);
@@ -456,25 +445,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         String timestamp = String.valueOf(System.currentTimeMillis());
                         //save location in the real-time database
                         final Position position = new Position(
+                                sharedPref.getThisDevice().getId(),
+                                sharedPref.getThisDevice().getOwnerID(),
+                                resolveAddress(location.latitude, location.longitude),
                                 location.latitude+"",
                                 location.longitude+"",
                                 timestamp,
-                                sharedPref.getThisDevice().getId(),
-                                sharedPref.getThisDevice().getUuid(),
-                                sharedPref.getThisDevice().getOwnerID(),
-                                resolveAddress(location.latitude, location.longitude),
                                 resolveDate(timestamp)
                         );
+
                         Call<PositionResponse> call = RetrofitClient.getInstance().getApi().addPosition(
-                                position.getDeviceID(), position.getUserID(), position.getAddress(), Double.parseDouble(position.getLatitude()),
-                                Double.parseDouble(position.getLongitude()), position.getDayTime(), position.getDateTime() );
+                                position.getDeviceID(), position.getUserID(), position.getAddress(), position.getLatitude(),
+                                position.getLongitude(), position.getDayTime(), position.getDateTime() );
                         call.enqueue(new Callback<PositionResponse>() {
                             @Override
                             public void onResponse(Call<PositionResponse> call, Response<PositionResponse> response) {
-                                if (!response.body().isError())
-                                    locationsList.add(response.body().getPosition());
-                                else
-                                    System.out.println(response.body().getMessage());
+                                locationsList.add(response.body().getPosition());
                             }
 
                             @Override
@@ -482,7 +468,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 System.out.println(t.getMessage());
                             }
                         });
-
                     }
                 }
             });
@@ -496,7 +481,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addPreviousLocations() {
-        if (locationsList.size() == 0)
+        if (locationsList.isEmpty())
             return;
         for (Position temp : locationsList){
             MarkerOptions marker = new MarkerOptions();
