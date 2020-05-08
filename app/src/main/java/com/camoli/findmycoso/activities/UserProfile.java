@@ -208,13 +208,11 @@ public class UserProfile extends AppCompatActivity {
             File file = new File(localProfileImg);
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part img = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
-            RequestBody userID = RequestBody.create(MediaType.parse("text/plain"), ""+sharedPref.getCurrentUser().getUserID());
 
-            Call<UploadResponse> call = RetrofitClient.getInstance().getApi().uploadProfilePic(img, userID);
+            Call<UploadResponse> call = RetrofitClient.getInstance().getApi().uploadProfilePic(img, sharedPref.getCurrentUser().getUserID());
             call.enqueue(new Callback<UploadResponse>() {
                 @Override
                 public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
-                    System.out.println("Codice errore upload Photo: "+response.message());
                     if(response.body().isError())
                         Toast.makeText(getApplicationContext(), "Errore caricamento foto profilo al server.", Toast.LENGTH_SHORT).show();
                     else {
@@ -231,8 +229,10 @@ public class UserProfile extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<UploadResponse> call, Throwable t) {
-                    t.printStackTrace();
-                    System.out.println("Callback fallita uploadPhoto: "+t.getMessage());
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    imgProgressBar.setVisibility(View.INVISIBLE);
+                    saveBtn.setBackground(getDrawable(R.drawable.rounded_button));
+                    saveBtn.setEnabled(true);
                 }
             });
         }

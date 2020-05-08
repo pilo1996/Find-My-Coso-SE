@@ -47,13 +47,13 @@ public class SharedPref {
     public void updateProfile(User user, String imgUrl, String name){
         SharedPreferences.Editor editor = myPreferences.edit();
         editor.putInt("userID", user.getUserID());
-        if(name != null  || name.isEmpty()|| !name.equals(""))
+        if(name != null  || !name.isEmpty()|| !name.equals(""))
             editor.putString("userName", name);
         else
             editor.putString("userName", user.getNome());
         editor.putString("userEmail", user.getEmail());
         editor.putString("userPassword", user.getPlainPassword());
-        if(imgUrl != null || imgUrl.isEmpty() || imgUrl.equals("") || imgUrl.equals("error"))
+        if(imgUrl == null || imgUrl.isEmpty() || imgUrl.equals("") || imgUrl.equals("error"))
             editor.putString("userPic", user.getProfile_pic());
         else
             editor.putString("userPic", imgUrl);

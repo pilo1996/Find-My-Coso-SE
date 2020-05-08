@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.Toolbar;
 
 import com.camoli.findmycoso.R;
@@ -87,5 +88,7 @@ public class HelpInfo extends FragmentActivity {
         setContentView(R.layout.activity_help_info);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
+        WebView webView = findViewById(R.id.webview);
+        webView.loadUrl("http://camoli.ns0.it");
     }
 }

@@ -16,4 +16,10 @@
         android:elevation="5dp"
         android:titleTextColor="@android:color/white"/>
 
+    <WebView
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/webview"/>
+
 </RelativeLayout>

@@ -40,7 +40,7 @@ public interface FMC_API {
     @POST("uploadProfilePic")
     Call<UploadResponse> uploadProfilePic(
             @Part MultipartBody.Part image,
-            @Part("userID") RequestBody userID
+            @Part("user_id") int userID
     );
 
     @FormUrlEncoded
