@@ -40,7 +40,7 @@ import retrofit2.Response;
 public class Login extends AppCompatActivity {
 
     private static final Pattern EMAIL_ADDRESS = Pattern.compile("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@" + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" + "(" + "\\." + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+");
-    private static final String[] REQUIRED_PERMISSIONS = new String[] {
+    private static final String[] REQUIRED_PERMISSIONS = new String[] { //solo per api>=29
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_WIFI_STATE,
@@ -51,9 +51,10 @@ public class Login extends AppCompatActivity {
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION, //solo per api>=29
     };
     private static final String[] REQUIRED_PERMISSIONS_OLD = new String[] { //api <= 28
             Manifest.permission.BLUETOOTH,
@@ -66,8 +67,9 @@ public class Login extends AppCompatActivity {
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CAMERA,
     };
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
@@ -188,6 +190,9 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
                         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
+                        login.setText(R.string.label_login);
+                        login.setEnabled(true);
                     }
                 });
             }

@@ -1,15 +1,20 @@
 package com.camoli.findmycoso.api;
 
+import com.google.gson.annotations.SerializedName;
+
 public class UploadResponse {
 
+    @SerializedName("error")
     private boolean error;
+    @SerializedName("message")
     private String message;
-    private String urlImg;
+    @SerializedName("url")
+    private String url;
 
-    public UploadResponse(boolean error, String message, String urlImg) {
+    public UploadResponse(boolean error, String message, String url) {
         this.error = error;
         this.message = message;
-        this.urlImg = urlImg;
+        this.url = url;
     }
 
     public boolean isError() {
@@ -20,8 +25,8 @@ public class UploadResponse {
         return message;
     }
 
-    public String getUrlImg(){
-        return urlImg;
+    public String getUrl(){
+        return url;
     }
 
 }

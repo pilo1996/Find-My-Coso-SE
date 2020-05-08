@@ -1,5 +1,7 @@
 package com.camoli.findmycoso.api;
 
+import com.google.gson.GsonBuilder;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -10,7 +12,7 @@ public class RetrofitClient {
     private Retrofit retrofit;
 
     private RetrofitClient(){
-        retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create())).build();
     }
 
     public static synchronized RetrofitClient getInstance(){

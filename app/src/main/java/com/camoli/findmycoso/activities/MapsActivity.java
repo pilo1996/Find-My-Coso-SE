@@ -65,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 1;
     private FloatingActionButton fabSettings, fabQr, fabAddDevice, fabHistory;
-    private static final String[] REQUIRED_PERMISSIONS = new String[] {
+    private static final String[] REQUIRED_PERMISSIONS = new String[] { //solo per api>=29
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_WIFI_STATE,
@@ -76,13 +76,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION, //solo per api>=29
     };
     private static final String[] REQUIRED_PERMISSIONS_OLD = new String[] { //api <= 28
             Manifest.permission.BLUETOOTH,
-            Manifest.permission.CAMERA,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.CHANGE_WIFI_STATE,
@@ -92,7 +92,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.FOREGROUND_SERVICE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CAMERA,
     };
     private SharedPref sharedPref;
     private LatLng location;

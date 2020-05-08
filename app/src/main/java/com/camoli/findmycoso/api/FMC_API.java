@@ -39,8 +39,8 @@ public interface FMC_API {
     @Multipart
     @POST("uploadProfilePic")
     Call<UploadResponse> uploadProfilePic(
-        @Part("image") MultipartBody.Part img,
-        @Part("userID") RequestBody userID
+            @Part MultipartBody.Part image,
+            @Part("userID") RequestBody userID
     );
 
     @FormUrlEncoded

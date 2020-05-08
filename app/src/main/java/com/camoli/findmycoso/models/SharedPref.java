@@ -35,11 +35,28 @@ public class SharedPref {
     public void setCurrentUser(User user){
         SharedPreferences.Editor editor = myPreferences.edit();
         editor.putInt("userID", user.getUserID());
-        System.out.println("****** CAMBIO USERID ***** -> "+user.getUserID());
         editor.putString("userName", user.getNome());
         editor.putString("userEmail", user.getEmail());
         editor.putString("userPassword", user.getPlainPassword());
         editor.putString("userPic", user.getProfile_pic());
+        editor.putInt("userValidated", user.getValidated());
+        editor.putInt("userSelectedDeviceID", user.getSelectedDeviceID());
+        editor.commit();
+    }
+
+    public void updateProfile(User user, String imgUrl, String name){
+        SharedPreferences.Editor editor = myPreferences.edit();
+        editor.putInt("userID", user.getUserID());
+        if(name != null  || name.isEmpty()|| !name.equals(""))
+            editor.putString("userName", name);
+        else
+            editor.putString("userName", user.getNome());
+        editor.putString("userEmail", user.getEmail());
+        editor.putString("userPassword", user.getPlainPassword());
+        if(imgUrl != null || imgUrl.isEmpty() || imgUrl.equals("") || imgUrl.equals("error"))
+            editor.putString("userPic", user.getProfile_pic());
+        else
+            editor.putString("userPic", imgUrl);
         editor.putInt("userValidated", user.getValidated());
         editor.putInt("userSelectedDeviceID", user.getSelectedDeviceID());
         editor.commit();
