@@ -50,6 +50,18 @@ public interface FMC_API {
             @Field("device_id") int deviceID
     );
 
+    @FormUrlEncoded
+    @POST("resetPassword")
+    Call<DefaultResponse> resetPassword(
+            @Field("email") String email
+    );
+
+    @FormUrlEncoded
+    @POST("sendEmailValidation")
+    Call<DefaultResponse> sendEmailValidation(
+            @Field("email") String email
+    );
+
     /*********************************** LOCATIONS ***********************************/
 
     @FormUrlEncoded

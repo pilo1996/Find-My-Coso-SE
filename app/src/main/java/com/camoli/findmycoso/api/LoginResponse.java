@@ -14,6 +14,12 @@ public class LoginResponse {
         this.user = user;
     }
 
+    public LoginResponse(boolean error, String message) {
+        this.error = error;
+        this.message = message;
+        this.user = new User(-1);
+    }
+
     public boolean isError() {
         return error;
     }

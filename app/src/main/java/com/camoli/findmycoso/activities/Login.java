@@ -154,36 +154,50 @@ public class Login extends AppCompatActivity {
                 call.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        if(!response.body().isError()){
-                            sharedPref.savePlainPassword(password);
-                            sharedPref.setCurrentUser(response.body().getUser());
-                            Toast.makeText(getApplicationContext(), "Bentornato, "+sharedPref.getCurrentUser().getNome()+"!", Toast.LENGTH_SHORT).show();
+                        switch(response.code()){
+                            case 200:
+                                sharedPref.savePlainPassword(password);
+                                sharedPref.setCurrentUser(response.body().getUser());
+                                Toast.makeText(getApplicationContext(), "Bentornato, "+sharedPref.getCurrentUser().getNome()+"!", Toast.LENGTH_SHORT).show();
 
-                            System.out.println(sharedPref.getCurrentUser().getValidated());
-                            System.out.println(sharedPref.getCurrentUser().getEmail());
-                            System.out.println(sharedPref.getCurrentUser().getUserID());
+                                System.out.println(sharedPref.getCurrentUser().getValidated());
+                                System.out.println(sharedPref.getCurrentUser().getEmail());
+                                System.out.println(sharedPref.getCurrentUser().getUserID());
 
-                            if(sharedPref.getCurrentUser().getValidated() == 1){
-                                if(!sharedPref.isProfileUpdated()){
-                                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                                    finish();
+                                if(sharedPref.getCurrentUser().getValidated() == 1){
+                                    if(!sharedPref.isProfileUpdated()){
+                                        startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                                        finish();
+                                    }
+                                    else {
+                                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                        finish();
+                                    }
                                 }
                                 else {
-                                    startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                    startActivity(new Intent(getApplicationContext(), EmailValidation.class));
                                     finish();
                                 }
-                            }
-                            else {
-                                //TODO send email verification
-                                startActivity(new Intent(getApplicationContext(), EmailValidation.class));
-                                finish();
-                            }
-                        }else{
-                            progressBar.setVisibility(View.INVISIBLE);
-                            login.setText(R.string.label_login);
-                            login.setEnabled(true);
-                            layoutInputEmail.setError(response.body().getMessage());
-                            layoutInputPassword.setError("Riprova.");
+                                break;
+                            case 423:
+                                progressBar.setVisibility(View.INVISIBLE);
+                                login.setText(R.string.label_login);
+                                login.setEnabled(true);
+                                layoutInputPassword.setError("Password errata.");
+                                break;
+                            case 421:
+                                progressBar.setVisibility(View.INVISIBLE);
+                                login.setText(R.string.label_login);
+                                login.setEnabled(true);
+                                layoutInputEmail.setError("Riprova più tardi.");
+                                layoutInputPassword.setError("Riprova più tardi.");
+                                break;
+                            case 422:
+                                progressBar.setVisibility(View.INVISIBLE);
+                                login.setText(R.string.label_login);
+                                login.setEnabled(true);
+                                layoutInputEmail.setError("Utente non trovato.");
+                                break;
                         }
                     }
 

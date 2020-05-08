@@ -11,7 +11,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DefaultResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
 import com.camoli.findmycoso.models.SharedPref;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EmailValidation extends AppCompatActivity {
 
@@ -20,6 +26,12 @@ public class EmailValidation extends AppCompatActivity {
     private TextView emailAddress;
     private String email;
     private SharedPref sharedPref;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        sendEmailValidation();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +66,9 @@ public class EmailValidation extends AppCompatActivity {
                 resendEmail.setText("");
                 resendEmail.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                //TODO invio email di verifica validazione
-                /*
+
+                sendEmailValidation();
+
                 try {
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
@@ -64,9 +77,24 @@ public class EmailValidation extends AppCompatActivity {
                 resendEmail.setText(getString(R.string.non_hai_ricevuto_la_mail));
                 resendEmail.setEnabled(true);
                 progressBar.setVisibility(View.INVISIBLE);
-                */
+
             }
         });
 
+    }
+
+    private void sendEmailValidation() {
+        Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().sendEmailValidation(email);
+        call.enqueue(new Callback<DefaultResponse>() {
+            @Override
+            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                System.out.println(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                System.out.println(t.getMessage());
+            }
+        });
     }
 }

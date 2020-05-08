@@ -2,8 +2,6 @@ package com.camoli.findmycoso.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.api.DefaultResponse;
+import com.camoli.findmycoso.api.RetrofitClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ResetPasswordDialog extends AppCompatDialogFragment {
 
@@ -45,14 +49,19 @@ public class ResetPasswordDialog extends AppCompatDialogFragment {
             public void onClick(View v) {
                 String email = emailText.getText().toString().trim();
                 if(!email.equals("")){
-                    //TODO Invio mail di convalida
-                    /*
-                    if(task.isSuccessful())
-                        Toast.makeText(getActivity().getApplicationContext(), "Mail di reset password inviata.", Toast.LENGTH_LONG).show();
-                    else
-                        Toast.makeText(getActivity().getApplicationContext(), "Errore, controlla connessione e mail.", Toast.LENGTH_LONG).show();
+                    Call<DefaultResponse> call = RetrofitClient.getInstance().getApi().resetPassword(email);
+                    call.enqueue(new Callback<DefaultResponse>() {
+                        @Override
+                        public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+                            Toast.makeText(getActivity().getApplicationContext(), "Controlla la tua mail.", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                            System.out.println(t.getMessage());
+                        }
+                    });
                     dismiss();
-                    */
                 }
             }
         });
