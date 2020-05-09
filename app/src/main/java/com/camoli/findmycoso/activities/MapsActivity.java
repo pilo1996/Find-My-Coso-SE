@@ -27,7 +27,7 @@ import android.widget.Toolbar;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.camoli.findmycoso.R;
-import com.camoli.findmycoso.UpdateBackgroundLocationService;
+import com.camoli.findmycoso.models.UpdateBackgroundLocationService;
 import com.camoli.findmycoso.api.DeviceListResponse;
 import com.camoli.findmycoso.api.PositionListResponse;
 import com.camoli.findmycoso.api.PositionResponse;
@@ -122,6 +122,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent serviceIntent = new Intent(this, UpdateBackgroundLocationService.class);
         stopService(serviceIntent);
         retriveLocations();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent serviceIntent = new Intent(this, UpdateBackgroundLocationService.class);
+        stopService(serviceIntent);
+        super.onDestroy();
     }
 
     private void stampaDevice(Device device){

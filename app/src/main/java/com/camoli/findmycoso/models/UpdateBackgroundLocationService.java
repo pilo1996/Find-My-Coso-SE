@@ -1,4 +1,4 @@
-package com.camoli.findmycoso;
+package com.camoli.findmycoso.models;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.camoli.findmycoso.R;
 import com.camoli.findmycoso.activities.MapsActivity;
 import com.camoli.findmycoso.api.PositionResponse;
 import com.camoli.findmycoso.api.RetrofitClient;
@@ -126,7 +127,7 @@ public class UpdateBackgroundLocationService extends Service {
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Find My Coso - Tracciamento Posizione")
-                .setContentText("Aggiornamento della posizione ogni"+DEFAULT_SYNC_INTERVAL/60000L+"minuti.")
+                .setContentText("Aggiornamento della posizione ogni "+DEFAULT_SYNC_INTERVAL/60000L+" minuti.")
                 .setSmallIcon(R.drawable.icon)
                 .setContentIntent(pendingIntent)
                 .build();
