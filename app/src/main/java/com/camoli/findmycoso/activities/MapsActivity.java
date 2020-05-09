@@ -27,6 +27,7 @@ import android.widget.Toolbar;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.camoli.findmycoso.R;
+import com.camoli.findmycoso.UpdateBackgroundLocationService;
 import com.camoli.findmycoso.api.DeviceListResponse;
 import com.camoli.findmycoso.api.PositionListResponse;
 import com.camoli.findmycoso.api.PositionResponse;
@@ -106,6 +107,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Device> deviceFavoritesList = new ArrayList<>();
     private DeviceBottomSheetSelector bottomSheetSelector;
     private Toolbar toolbar;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Intent serviceIntent = new Intent(this, UpdateBackgroundLocationService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        deviceName.setText(sharedPref.getSelectedDevice().getName());
+        Intent serviceIntent = new Intent(this, UpdateBackgroundLocationService.class);
+        stopService(serviceIntent);
+        retriveLocations();
+    }
 
     private void stampaDevice(Device device){
         System.out.println("Device ID: "+device.getId());
@@ -523,12 +540,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             recreate();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        deviceName.setText(sharedPref.getSelectedDevice().getName());
     }
 
 }
