@@ -203,7 +203,7 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "LOL "+t.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                         login.setText(R.string.label_login);
                         login.setEnabled(true);

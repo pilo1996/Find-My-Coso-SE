@@ -161,7 +161,7 @@ public class ScanQR extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                             System.out.println(response.code());
-                            if(!response.body().isError()){
+                            if(response.code() == 201){
                                 //favoriteIcon.setImageResource(R.drawable.ic_favorite_full);
                                 favoriteIcon.setVisibility(View.GONE);
                                 LottieAnimationView heart = findViewById(R.id.heart_animation);
@@ -171,8 +171,11 @@ public class ScanQR extends AppCompatActivity {
                                 favoriteLabel.setTextColor(Color.parseColor("#303030"));
                                 favoriteLabel.setEnabled(false);
                             }
-                            else
-                                favoriteLabel.setText(response.body().getMessage());
+                            else{
+                                if(call.isExecuted() && response.isSuccessful())
+                                    favoriteLabel.setText(response.body().getMessage());
+                            }
+
                         }
 
                         @Override

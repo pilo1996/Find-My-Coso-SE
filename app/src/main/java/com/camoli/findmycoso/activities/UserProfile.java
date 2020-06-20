@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.camoli.findmycoso.R;
 import com.camoli.findmycoso.api.RetrofitClient;
 import com.camoli.findmycoso.api.LoginResponse;
@@ -176,6 +177,8 @@ public class UserProfile extends AppCompatActivity {
         //Caso se si vuole aggiornare solo il nome
         if(currentUser.getUserID() == -1)
             return res[0];
+        if(localProfileImg != currentUser.getProfile_pic() && currentUser.getProfile_pic().equals("error"))
+            currentUser.setProfile_pic(localProfileImg);
         Call<LoginResponse> call = RetrofitClient.getInstance().getApi().updateUser(currentUser.getUserID(), nome_text, currentUser.getProfile_pic());
         call.enqueue(new Callback<LoginResponse>() {
             @Override
@@ -202,7 +205,6 @@ public class UserProfile extends AppCompatActivity {
         final boolean[] res = {false};
         if(localProfileImg != null || !localProfileImg.isEmpty()){
             Toast.makeText(getApplicationContext(), "Upload immagine in corso...", Toast.LENGTH_LONG).show();
-
             localProfileImg = getPath(getApplicationContext(), selectedImg);
             System.out.println("path: "+localProfileImg);
             File file = new File(localProfileImg);
@@ -217,6 +219,7 @@ public class UserProfile extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Errore caricamento foto profilo al server.", Toast.LENGTH_SHORT).show();
                     else {
                         localProfileImg = response.body().getUrl();
+                        System.out.println("Percorso salvato in cache: "+localProfileImg);
                         sharedPref.updateProfile(currentUser, localProfileImg, currentUser.getNome());
                         Toast.makeText(getApplicationContext(), "Foto caricata", Toast.LENGTH_SHORT).show();
                         done();

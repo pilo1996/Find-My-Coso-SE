@@ -128,7 +128,7 @@ public class Signup extends AppCompatActivity {
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        System.out.println(response.code());
+                        System.out.println("LOL "+response.code());
                         switch (response.code()){
                             case 201: //registrazione andata a buon fine
                                 Toast.makeText(getApplicationContext(), "Registrato con successo!", Toast.LENGTH_SHORT).show();

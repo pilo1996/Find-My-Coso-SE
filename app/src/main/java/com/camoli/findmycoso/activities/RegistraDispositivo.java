@@ -211,7 +211,7 @@ public class RegistraDispositivo extends FragmentActivity {
                     call.enqueue(new Callback<DeviceResponse>() {
                         @Override
                         public void onResponse(Call<DeviceResponse> call, Response<DeviceResponse> response) {
-                            //if(call.isExecuted() && response.isSuccessful()) {
+                            if(call.isExecuted() && response.isSuccessful()){
                                 if(response.body().isError())
                                     showSnackBarCustom(response.body().getMessage(), "#ff0000");
                                 else {
@@ -221,9 +221,9 @@ public class RegistraDispositivo extends FragmentActivity {
                                     sharedpref.setThisDevice(device);
                                     sharedpref.setSelectedDevice(device);
                                 }
-                            /*}
+                            }
                             else
-                                showSnackBarCustom("Errore imprevisto.", "#ff0000");*/
+                                showSnackBarCustom("Errore imprevisto.", "#ff0000");
                         }
 
                         @Override

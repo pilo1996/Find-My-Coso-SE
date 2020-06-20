@@ -41,8 +41,8 @@ public class HelpInfo extends FragmentActivity {
                 startActivity(new Intent(this, UserProfile.class));
                 finish();
                 break;
-            case R.id.helpInfo:
-                startActivity(new Intent(this, HelpInfo.class));
+            case R.id.settings:
+                startActivity(new Intent(this, Impostazioni.class));
                 finish();
                 break;
             case R.id.esci:
