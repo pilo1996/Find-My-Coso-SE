@@ -29,8 +29,6 @@ Il server attualmente è un ThinkPad t431s con Windows 10 64bit, XAMPP aggiornat
 
 
 ## TODO List
-- [ ] Conversione progetto da Firebase a Server privato con FMCREST API
-- [ ] Aggiornamento posizione in background
 - [ ] Refresh UI in MapsActivity
 
 # 
