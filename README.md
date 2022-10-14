@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/pilo1996/find-my-coso-se/badge)](https://www.codefactor.io/repository/github/pilo1996/find-my-coso-se)
+
 # Find My Coso SE (Server Edition)
 
 _Find My Coso_ è un progetto di Laurea Triennale finalizzato per la stesura di un elaborato finale (tesi).
